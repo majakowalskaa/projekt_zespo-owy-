@@ -5,3 +5,4 @@ członkowie: Maja, Ewa, Kinga.
 
 # projekt analiza danych w R
 #maja1
+#kinga
