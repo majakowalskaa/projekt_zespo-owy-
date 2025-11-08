@@ -21,3 +21,23 @@ lifestyle <- read_csv("dane/Final_data.csv")
 Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowego zbioru danych, który łączy kluczowe wskaźniki biometryczne, szczegółowe metryki aktywności fizycznej oraz dogłębne informacje dotyczące nawyków żywieniowych. W erze cyfrowej, gdzie dane o zdrowiu i stylu życia stają się coraz bardziej zintegrowane, możliwość holistycznego badania wzajemnych zależności między dietą, treningiem a fizjologią jest kluczowa dla zrozumienia mechanizmów kształtujących ogólny stan zdrowia i kondycję.
 
 ##Pytania badawcze
+
+1. Jak Workout_Type (Typ treningu) i Session_Duration (Czas trwania sesji) wpływają łącznie na liczbę Calories_Burned (Spalonych kalorii)?
+
+2. Czy istnieje związek między diet_type (Typem diety) a Fat_Percentage (Procentem tkanki tłuszczowej) lub BMI uczestników?
+
+3. W jakim stopniu Experience_Level (Poziom doświadczenia) uczestnika koreluje z jego Resting_BPM (Tętnem spoczynkowym) oraz Avg_BPM (Średnim tętnem) podczas treningu?
+
+4. Jaka jest zależność między Workout_Frequency (Częstotliwością treningów) a Calories_Burned (Spalonymi kaloriami), kontrolując zmienne demograficzne, takie jak Age (Wiek) i Gender (Płeć)?
+
+5. W jaki sposób cooking_method (Metoda gotowania) i prep_time_min (Czas przygotowania) wpływają na to, czy posiłek jest oznaczony jako is_healthy (Zdrowy)?
+
+6. Czy istnieje korelacja między Water_Intake (Spożyciem wody) a Session_Duration (Czasem trwania sesji) lub Workout_Frequency (Częstotliwością treningów)?
+
+7. Jak Target Muscle Group (Docelowa grupa mięśniowa) i Difficulty Level (Poziom trudności) ćwiczenia wpływają na szacunkową liczbę Burns Calories (per 30 min) (Spalonych kalorii na 30 min)?
+
+8. Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Workout_Type (Typu treningu) najczęściej wybieranego przez uczestnika?
+
+9. Jak zawartość sugar_g (Cukru), sodium_mg (Sodu) i cholesterol_mg (Cholesterolu) w posiłkach różni się między różnymi diet_type (Typami diet)?
+
+10. Czy Age (Wiek) i Gender (Płeć) uczestników mają związek z wyborem Workout_Type (Typu treningu) lub Difficulty Level (Poziomem trudności) ćwiczeń?
