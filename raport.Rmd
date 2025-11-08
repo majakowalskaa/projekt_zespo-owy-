@@ -14,6 +14,6 @@ output:
 ## Global options
 knitr::opts_chunk$set(cache = TRUE)
 library(tidyverse)
-lifestyle <- read_csv("https://raw.githubusercontent.com/kflisikowsky/analiza_danych_projekt_zespolowy/refs/heads/main/Life%20Style%20Data/Final_data.csv")
+lifestyle <- read_csv("dane/Final_data.csv")
 ```
 
