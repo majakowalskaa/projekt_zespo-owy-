@@ -21,3 +21,30 @@ lifestyle <- read_csv("dane/Final_data.csv")
 Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowego zbioru danych, który łączy kluczowe wskaźniki biometryczne, szczegółowe metryki aktywności fizycznej oraz dogłębne informacje dotyczące nawyków żywieniowych. W erze cyfrowej, gdzie dane o zdrowiu i stylu życia stają się coraz bardziej zintegrowane, możliwość holistycznego badania wzajemnych zależności między dietą, treningiem a fizjologią jest kluczowa dla zrozumienia mechanizmów kształtujących ogólny stan zdrowia i kondycję.
 
 ##Pytania badawcze
+1. Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbęS palonych kalorii?
+
+2. Czy istnieje związek między Typem diety a Procentem tkanki tłuszczowej lub BMI uczestników?
+
+3. W jakim stopniu Poziom doświadczenia uczestnika koreluje z jego Tętnem spoczynkowym oraz Średnim tętnem podczas treningu?
+
+4. Jaka jest zależność między Częstotliwością treningów a Spalonymi kaloriami, kontrolując zmienne demograficzne, takie jak Wiek i Płeć?
+
+5. W jaki sposób Metoda gotowania i Czas przygotowania wpływają na to, czy posiłek jest oznaczony jako Zdrowy?
+
+6. Czy istnieje korelacja między Spożyciem wody a Czasem trwania sesji lub Częstotliwością treningów?
+
+7. Jak Docelowa grupa mięśniowa i Poziom trudności ćwiczenia wpływają na szacunkową liczbę Spalonych kalorii na 30 min?
+
+8. Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Typu treningu najczęściej wybieranego przez uczestnika?
+
+9. Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
+
+10. Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
+
+
+
+#Opis danych
+Zbiór danych zawiera `r nrow(lifestyle`) obserwacji i `r ncol(lifestyle)` zmiennych.
+
+Poniżej znadjuje się opis najważniejszych zmiewnnych:
+- `
