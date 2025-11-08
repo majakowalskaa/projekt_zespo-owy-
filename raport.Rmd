@@ -16,11 +16,13 @@ library(tidyverse)
 lifestyle <- read_csv("dane/Final_data.csv")
 ```
 
-#Wstęp
+# Wstęp
 
 Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowego zbioru danych, który łączy kluczowe wskaźniki biometryczne, szczegółowe metryki aktywności fizycznej oraz dogłębne informacje dotyczące nawyków żywieniowych. W erze cyfrowej, gdzie dane o zdrowiu i stylu życia stają się coraz bardziej zintegrowane, możliwość holistycznego badania wzajemnych zależności między dietą, treningiem a fizjologią jest kluczowa dla zrozumienia mechanizmów kształtujących ogólny stan zdrowia i kondycję.
 
-##Pytania badawcze
+
+
+## Pytania badawcze
 
 1. Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbęS palonych kalorii?
 
@@ -42,5 +44,14 @@ Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowe
 
 10. Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
 
+
+
+
+
+# Opis danych
+
+Zbiór danych zawiera `r nrow(lifestyle`) obserwacji i `r ncol(lifestyle)` zmiennych.
+
+Poniżej znadjuje się opis najważniejszych zmiewnnych:
 
 
