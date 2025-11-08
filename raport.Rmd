@@ -41,3 +41,6 @@ Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowe
 9. Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
 
 10. Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
+
+
+
