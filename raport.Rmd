@@ -22,9 +22,9 @@ Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowe
 
 ##Pytania badawcze
 
-1. Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbę Calories_Burned (Spalonych kalorii)?
+1. Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbęS palonych kalorii?
 
-2. Czy istnieje związek między diet_type (Typem diety) a Fat_Percentage (Procentem tkanki tłuszczowej) lub BMI uczestników?
+2. Czy istnieje związek między Typem diety a Fat_Percentage (Procentem tkanki tłuszczowej) lub BMI uczestników?
 
 3. W jakim stopniu Experience_Level (Poziom doświadczenia) uczestnika koreluje z jego Resting_BPM (Tętnem spoczynkowym) oraz Avg_BPM (Średnim tętnem) podczas treningu?
 
