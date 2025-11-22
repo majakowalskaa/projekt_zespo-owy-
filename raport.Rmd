@@ -66,4 +66,5 @@ Poniżej znadjuje się opis najważniejszych zmiennych:
 - `Metoda gotowania`: sposób przygotowania posiłków (np. gotowanie, smażenie, pieczenie).
 - `Czas przygotowania`: czas potrzebny na przygotowanie posiłku w minutach
 - `Zdrowy posiłek`: wskaźnik, czy posiłek jest uważany za zdrowy (Tak/Nie).
+- `Spożycie wody`: ilość wody spożywanej przez uczestnika dziennie w litrach
 
