@@ -54,7 +54,7 @@ Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowe
 
 # Opis danych
 
-Zbiór danych zawiera `r nrow(lifestyle`) obserwacji i `r ncol(lifestyle)` zmiennych.
+Zbiór danych zawiera `r nrow(lifestyle)` obserwacji i `r ncol(lifestyle)` zmiennych.
 
 Poniżej znadjuje się opis najważniejszych zmiennych:
 - `Wiek`: wiek uczestnika w latach.
