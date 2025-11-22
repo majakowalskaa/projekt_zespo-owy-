@@ -13,6 +13,12 @@ output:
 ## Global options
 knitr::opts_chunk$set(cache = TRUE)
 library(tidyverse)
+library(naniar)
+library(VIM)
+library(validate)
+library(validatetools)
+library(dcmodify)
+library(errorlocate)
 lifestyle <- read_csv("dane/Final_data.csv")
 ```
 
@@ -67,4 +73,37 @@ Poniżej znadjuje się opis najważniejszych zmiennych:
 - `Czas przygotowania`: czas potrzebny na przygotowanie posiłku w minutach
 - `Zdrowy posiłek`: wskaźnik, czy posiłek jest uważany za zdrowy (Tak/Nie).
 - `Spożycie wody`: ilość wody spożywanej przez uczestnika dziennie w litrach
+
+# 2. Porządkowanie i czyszczenie danych
+
+# 2.1 Braki danych
+
+
+
+```{r}
+procent <- prop_complete_var(lifestyle)*100
+```
+
+W danych znajduje się `r procent` % kompletnych wartości
+
+```{r}
+VIM::aggr(lifestyle, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(lifestyle), cex.axis=.7, gap=3, ylab=c("Procent braków danych","Wzorzec braków danych"))
+```
+## walidacja danych
+
+**Definicja**
+
+```{r}
+rules <- validator(
+  Age >= 18,
+  BMI >= 10 & BMI <= 50,
+  `Fat_Percentage` >= 5 & `Fat_Percentage` <= 60,
+  `Session_Duration` > 0,
+  `Calories_Burned` >= 0,
+  `Resting_BPM` >= 40 & `Resting_BPM` <= 120)
+```
+
+cf <- confront(lifestyle, rules)
+summary(cf)
+barplot(cf)
 
