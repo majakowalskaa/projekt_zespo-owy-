@@ -51,6 +51,18 @@ Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowe
 Zbiór danych zawiera `r nrow(lifestyle`) obserwacji i `r ncol(lifestyle)` zmiennych.
 
 Poniżej znadjuje się opis najważniejszych zmiennych:
-cos
+- `Wiek`: wiek uczestnika w latach.
+- `Płeć`: płeć uczestnika (Mężczyzna/Kobieta).
+- `BMI`: wskaźnik masy ciała uczestnika.
+- `Procent tkanki tłuszczowej`: procentowa zawartość tkanki tłucszczowej w organizmie uczestnika.
+- `Typ treningu`: kategoria treningu wykonywanego przez uczestnika (np. siłowy, cardio, mieszany).
+- `Czas trwania sesji`: czas trwania jednej sesji treningowej w minut
+- `Liczba spalonych kalorii`: liczba kalorii spalonych podczas jednej sesji treningowej.
+- `Typ diety`: kategoria diety stosowanej przez uczestnika (np. wegetariańska, niskowęglowodanowa, wysokobiałkowa).
+- `Poziom doświadczenia`: poziom zaawansowania uczestnika w treningach (np. początkujący, średniozaawansowany, zaawansowany).
+- `Tętno spoczynkowe`: tętno uczestnika w stanie spoczynku.
+- `Średnie tętno podczas treningu`: średnie tętno uczestnika podczas sesji treningowej.
+- `Częstotliwość treningów`: liczba treningów wykonywanych przez uczestnika w tygodniu.
+- `Metoda gotowania`: sposób przygotowania posiłków (np. gotowanie, smażenie, pieczenie).
 
 
