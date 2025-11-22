@@ -64,5 +64,5 @@ Poniżej znadjuje się opis najważniejszych zmiennych:
 - `Średnie tętno podczas treningu`: średnie tętno uczestnika podczas sesji treningowej.
 - `Częstotliwość treningów`: liczba treningów wykonywanych przez uczestnika w tygodniu.
 - `Metoda gotowania`: sposób przygotowania posiłków (np. gotowanie, smażenie, pieczenie).
-
+- `Czas przygotowania`: czas potrzebny na przygotowanie posiłku w minutach
 
