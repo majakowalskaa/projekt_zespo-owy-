@@ -20,7 +20,7 @@ library(validatetools)
 library(dcmodify)
 library(errorlocate)
 lifestyle <- read_csv("dane/Final_data.csv")
-```
+
 
 # Wstęp
 
@@ -80,20 +80,20 @@ Poniżej znadjuje się opis najważniejszych zmiennych:
 
 
 
-```{r}
+{r}
 procent <- prop_complete_var(lifestyle)*100
-```
+
 
 W danych znajduje się `r procent` % kompletnych wartości
 
-```{r}
+{r}
 VIM::aggr(lifestyle, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(lifestyle), cex.axis=.7, gap=3, ylab=c("Procent braków danych","Wzorzec braków danych"))
-```
+
 ## walidacja danych
 
 **Definicja**
 
-```{r}
+{r}
 rules <- validator(
   Age >= 18,
   BMI >= 10 & BMI <= 50,
@@ -101,9 +101,40 @@ rules <- validator(
   `Session_Duration` > 0,
   `Calories_Burned` >= 0,
   `Resting_BPM` >= 40 & `Resting_BPM` <= 120)
-```
+
 
 cf <- confront(lifestyle, rules)
 summary(cf)
 barplot(cf)
 
+## wizualizacja danych
+
+# 1. Typ treningu × Czas trwania → Spalone kalorie
+
+plot_ly(df, x = ~workout_type, y = ~sessonion_duration,
+        type = "box", color = ~workout_type)
+labs(title = "Relationship between workout typ and session durarion",
+     x = "Workout Typ"
+     y = "Session duration (in hour)") + 
+  theme_minimal()
+plot_ly(df, x = ~workout_type, y = ~Calories_Burned,
+        type = "box", color = ~workout_type)
+
+
+
+# 2. Typ diety × Procent tkanki tłuszczowej / BMI
+
+plot_ly(df, x = ~diet_type, y = ~Fats,
+        type = "box", color = ~diet_type)
+
+plot_ly(df, x = ~diet_type, y = ~BMI,
+        type = "box", color = ~diet_type)
+
+#Interpretacja: 
+
+
+# 3. Poziom doświadczenia × Tętno spoczynkowe / Średnie tętno podczas treningu
+
+
+
+# 4. Częstotliwość treningów × Spalone kalorie (kontrolując Wiek i Płeć)
