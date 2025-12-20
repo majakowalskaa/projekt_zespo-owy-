@@ -1,14 +1,3 @@
----
-title: "Analiza Danych - projekt"
-author: "Maja Kowalska, Ewa Zacharewicz, Kinga Posłuszny"
-date: "`r Sys.Date()`"
-output:
-  rmdformats::downcute:
-    self_contained: true
-    default_style: "light"
-    downcute_theme: "default"
----
-
 ```{r setup, include=FALSE}
 ## Global options
 knitr::opts_chunk$set(cache = TRUE)
@@ -31,33 +20,33 @@ Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowe
 ## Pytania badawcze
 
 1. Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbęS palonych kalorii?
-
-2. Czy istnieje związek między Typem diety a Procentem tkanki tłuszczowej lub BMI uczestników?
-
-3. W jakim stopniu Poziom doświadczenia uczestnika koreluje z jego Tętnem spoczynkowym oraz Średnim tętnem podczas treningu?
-
-4. Jaka jest zależność między Częstotliwością treningów a Spalonymi kaloriami, kontrolując zmienne demograficzne, takie jak Wiek i Płeć?
-
-5. W jaki sposób Metoda gotowania i Czas przygotowania wpływają na to, czy posiłek jest oznaczony jako Zdrowy?
-
-6. Czy istnieje korelacja między Spożyciem wody a Czasem trwania sesji lub Częstotliwością treningów?
-
-7. Jak Docelowa grupa mięśniowa i Poziom trudności ćwiczenia wpływają na szacunkową liczbę Spalonych kalorii na 30 min?
-
-8. Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Typu treningu najczęściej wybieranego przez uczestnika?
-
-9. Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
-
-10. Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
-
-
-
-# Opis danych
-
-Zbiór danych zawiera `r nrow(lifestyle)` obserwacji i `r ncol(lifestyle)` zmiennych.
+  
+  2. Czy istnieje związek między Typem diety a Procentem tkanki tłuszczowej lub BMI uczestników?
+  
+  3. W jakim stopniu Poziom doświadczenia uczestnika koreluje z jego Tętnem spoczynkowym oraz Średnim tętnem podczas treningu?
+  
+  4. Jaka jest zależność między Częstotliwością treningów a Spalonymi kaloriami, kontrolując zmienne demograficzne, takie jak Wiek i Płeć?
+  
+  5. W jaki sposób Metoda gotowania i Czas przygotowania wpływają na to, czy posiłek jest oznaczony jako Zdrowy?
+  
+  6. Czy istnieje korelacja między Spożyciem wody a Czasem trwania sesji lub Częstotliwością treningów?
+  
+  7. Jak Docelowa grupa mięśniowa i Poziom trudności ćwiczenia wpływają na szacunkową liczbę Spalonych kalorii na 30 min?
+  
+  8. Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Typu treningu najczęściej wybieranego przez uczestnika?
+  
+  9. Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
+  
+  10. Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
+  
+  
+  
+  # Opis danych
+  
+  Zbiór danych zawiera `r nrow(lifestyle)` obserwacji i `r ncol(lifestyle)` zmiennych.
 
 Poniżej znadjuje się opis najważniejszych zmiennych:
-- `Wiek`: wiek uczestnika w latach.
+  - `Wiek`: wiek uczestnika w latach.
 - `Płeć`: płeć uczestnika (Mężczyzna/Kobieta).
 - `BMI`: wskaźnik masy ciała uczestnika.
 - `Procent tkanki tłuszczowej`: procentowa zawartość tkanki tłucszczowej w organizmie uczestnika.
@@ -92,8 +81,8 @@ VIM::aggr(lifestyle, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, label
 ## walidacja danych
 
 **Definicja**
-
-{r}
+  
+  {r}
 rules <- validator(
   Age >= 18,
   BMI >= 10 & BMI <= 50,
@@ -175,4 +164,3 @@ ggplot(lifestyle, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned))
        x = "Liczba treningów w tygodniu",
        y = "Spalone kalorie",
        color = "Wiek")
-
