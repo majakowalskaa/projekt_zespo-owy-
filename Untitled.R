@@ -130,6 +130,7 @@ ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) +
   theme_minimal() +
   theme(legend.position = "none")
 
+#Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest niemal identyczny dla wszystkich grup dietetycznych, z medianą oscylującą stabilnie wokół wartości 24-25. Dowodzi to, że w badanej populacji sam typ stosowanej diety nie jest czynnikiem różnicującym masę ciała uczestników.
 #Interpretacja: 
 
 
@@ -164,3 +165,54 @@ ggplot(lifestyle, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned))
        x = "Liczba treningów w tygodniu",
        y = "Spalone kalorie",
        color = "Wiek")
+
+# 5. Metoda gotowania x czas przygotowania / zdrowy posiłek
+lifestyle <- lifestyle %>%
+  mutate(Zdrowy_posilek = ifelse(rating >= 3, "Tak", "Nie"))
+ggplot(lifestyle, aes(x = cooking_method, y = prep_time_min, fill = Zdrowy_posilek)) +
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  labs(title = "Metoda gotowania a czas przygotowania zdrowych posiłków",
+       subtitle = "Czy przygotowanie zdrowych dań (ocena >= 3) zajmuje więcej czasu?",
+       x = "Metoda gotowania",
+       y = "Czas przygotowania (min)",
+       fill = "Czy zdrowy?") +
+  scale_fill_manual(values = c("salmon", "mediumseagreen")) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+# 6. Spożycie wody x długość treningu / częstotliwość treningu
+
+ggplot(lifestyle, aes(x = `Water_Intake (liters)`, y = `Session_Duration (hours)`)) +
+  geom_point(aes(color = `Workout_Frequency (days/week)`), alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  scale_color_viridis_c(option = "plasma", name = "Treningi/tydz") +
+  labs(title = "Korelacja: Spożycie wody a Czas i Częstotliwość treningu",
+       subtitle = "Czy osoby pijące więcej wody trenują dłużej i częściej?",
+       x = "Spożycie wody (litry)",
+       y = "Czas trwania sesji (godziny)") +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"),
+        legend.position = "right")
+
+# Mapa korrelacji
+
+dane_do_korelacji <- lifestyle %>%
+  select(Age, `Weight (kg)`, `Height (m)`, BMI, Fat_Percentage, 
+         `Session_Duration (hours)`, Calories_Burned, Avg_BPM, 
+         Resting_BPM, `Workout_Frequency (days/week)`)
+macierz_korelacji <- cor(dane_do_korelacji, use = "complete.obs")
+dane_wykres <- as.data.frame(macierz_korelacji) %>%
+  rownames_to_column(var = "Zmienna1") %>%
+  pivot_longer(cols = -Zmienna1, names_to = "Zmienna2", values_to = "Korelacja")
+ggplot(dane_wykres, aes(x = Zmienna1, y = Zmienna2, fill = Korelacja)) +
+  geom_tile(color = "white") + # Rysuje kwadraty
+  scale_fill_gradient2(low = "steelblue", high = "firebrick", mid = "white", 
+                       midpoint = 0, limit = c(-1,1), name="Korelacja") +
+  geom_text(aes(label = round(Korelacja, 2)), color = "black", size = 3) +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) + # Obraca podpisy osi X
+  labs(title = "Mapa Korelacji Zmiennych", 
+       x = "", 
+       y = "") +
+  coord_fixed()
