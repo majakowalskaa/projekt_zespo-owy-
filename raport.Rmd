@@ -9,174 +9,106 @@ output:
     downcute_theme: "default"
 ---
 
-```{r setup, include=FALSE}
-## Global options
-knitr::opts_chunk$set(cache = TRUE)
-library(tidyverse)
-library(naniar)
-library(VIM)
-library(validate)
-library(validatetools)
-library(dcmodify)
-library(errorlocate)
-lifestyle <- read_csv("dane/Final_data.csv")
-
+\`\`\`{r setup, include=FALSE} \## Global options knitr::opts_chunk\$set(cache = TRUE) library(tidyverse) library(naniar) library(VIM) library(validate) library(validatetools) library(dcmodify) library(errorlocate) lifestyle \<- read_csv("dane/Final_data.csv")
 
 # Wstęp
 
 Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowego zbioru danych, który łączy kluczowe wskaźniki biometryczne, szczegółowe metryki aktywności fizycznej oraz dogłębne informacje dotyczące nawyków żywieniowych. W erze cyfrowej, gdzie dane o zdrowiu i stylu życia stają się coraz bardziej zintegrowane, możliwość holistycznego badania wzajemnych zależności między dietą, treningiem a fizjologią jest kluczowa dla zrozumienia mechanizmów kształtujących ogólny stan zdrowia i kondycję.
 
-
-
 ## Pytania badawcze
 
-1. Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbęS palonych kalorii?
+1.  Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbęS palonych kalorii?
 
-2. Czy istnieje związek między Typem diety a Procentem tkanki tłuszczowej lub BMI uczestników?
+2.  Czy istnieje związek między Typem diety a Procentem tkanki tłuszczowej lub BMI uczestników?
 
-3. W jakim stopniu Poziom doświadczenia uczestnika koreluje z jego Tętnem spoczynkowym oraz Średnim tętnem podczas treningu?
+3.  W jakim stopniu Poziom doświadczenia uczestnika koreluje z jego Tętnem spoczynkowym oraz Średnim tętnem podczas treningu?
 
-4. Jaka jest zależność między Częstotliwością treningów a Spalonymi kaloriami, kontrolując zmienne demograficzne, takie jak Wiek i Płeć?
+4.  Jaka jest zależność między Częstotliwością treningów a Spalonymi kaloriami, kontrolując zmienne demograficzne, takie jak Wiek i Płeć?
 
-5. W jaki sposób Metoda gotowania i Czas przygotowania wpływają na to, czy posiłek jest oznaczony jako Zdrowy?
+5.  W jaki sposób Metoda gotowania i Czas przygotowania wpływają na to, czy posiłek jest oznaczony jako Zdrowy?
 
-6. Czy istnieje korelacja między Spożyciem wody a Czasem trwania sesji lub Częstotliwością treningów?
+6.  Czy istnieje korelacja między Spożyciem wody a Czasem trwania sesji lub Częstotliwością treningów?
 
-7. Jak Docelowa grupa mięśniowa i Poziom trudności ćwiczenia wpływają na szacunkową liczbę Spalonych kalorii na 30 min?
+7.  Jak Docelowa grupa mięśniowa i Poziom trudności ćwiczenia wpływają na szacunkową liczbę Spalonych kalorii na 30 min?
 
-8. Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Typu treningu najczęściej wybieranego przez uczestnika?
+8.  Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Typu treningu najczęściej wybieranego przez uczestnika?
 
-9. Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
+9.  Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
 
 10. Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
-
-
 
 # Opis danych
 
 Zbiór danych zawiera `r nrow(lifestyle)` obserwacji i `r ncol(lifestyle)` zmiennych.
 
-Poniżej znadjuje się opis najważniejszych zmiennych:
-- `Wiek`: wiek uczestnika w latach.
-- `Płeć`: płeć uczestnika (Mężczyzna/Kobieta).
-- `BMI`: wskaźnik masy ciała uczestnika.
-- `Procent tkanki tłuszczowej`: procentowa zawartość tkanki tłucszczowej w organizmie uczestnika.
-- `Typ treningu`: kategoria treningu wykonywanego przez uczestnika (np. siłowy, cardio, mieszany).
-- `Czas trwania sesji`: czas trwania jednej sesji treningowej w minut
-- `Liczba spalonych kalorii`: liczba kalorii spalonych podczas jednej sesji treningowej.
-- `Typ diety`: kategoria diety stosowanej przez uczestnika (np. wegetariańska, niskowęglowodanowa, wysokobiałkowa).
-- `Poziom doświadczenia`: poziom zaawansowania uczestnika w treningach (np. początkujący, średniozaawansowany, zaawansowany).
-- `Tętno spoczynkowe`: tętno uczestnika w stanie spoczynku.
-- `Średnie tętno podczas treningu`: średnie tętno uczestnika podczas sesji treningowej.
-- `Częstotliwość treningów`: liczba treningów wykonywanych przez uczestnika w tygodniu.
-- `Metoda gotowania`: sposób przygotowania posiłków (np. gotowanie, smażenie, pieczenie).
-- `Czas przygotowania`: czas potrzebny na przygotowanie posiłku w minutach
-- `Zdrowy posiłek`: wskaźnik, czy posiłek jest uważany za zdrowy (Tak/Nie).
-- `Spożycie wody`: ilość wody spożywanej przez uczestnika dziennie w litrach
+Poniżej znadjuje się opis najważniejszych zmiennych: - `Wiek`: wiek uczestnika w latach. - `Płeć`: płeć uczestnika (Mężczyzna/Kobieta). - `BMI`: wskaźnik masy ciała uczestnika. - `Procent tkanki tłuszczowej`: procentowa zawartość tkanki tłucszczowej w organizmie uczestnika. - `Typ treningu`: kategoria treningu wykonywanego przez uczestnika (np. siłowy, cardio, mieszany). - `Czas trwania sesji`: czas trwania jednej sesji treningowej w minut - `Liczba spalonych kalorii`: liczba kalorii spalonych podczas jednej sesji treningowej. - `Typ diety`: kategoria diety stosowanej przez uczestnika (np. wegetariańska, niskowęglowodanowa, wysokobiałkowa). - `Poziom doświadczenia`: poziom zaawansowania uczestnika w treningach (np. początkujący, średniozaawansowany, zaawansowany). - `Tętno spoczynkowe`: tętno uczestnika w stanie spoczynku. - `Średnie tętno podczas treningu`: średnie tętno uczestnika podczas sesji treningowej. - `Częstotliwość treningów`: liczba treningów wykonywanych przez uczestnika w tygodniu. - `Metoda gotowania`: sposób przygotowania posiłków (np. gotowanie, smażenie, pieczenie). - `Czas przygotowania`: czas potrzebny na przygotowanie posiłku w minutach - `Zdrowy posiłek`: wskaźnik, czy posiłek jest uważany za zdrowy (Tak/Nie). - `Spożycie wody`: ilość wody spożywanej przez uczestnika dziennie w litrach
 
 # 2. Porządkowanie i czyszczenie danych
 
 # 2.1 Braki danych
 
-
-
-{r}
-procent <- prop_complete_var(lifestyle)*100
-
+{r} procent \<- prop_complete_var(lifestyle)\*100
 
 W danych znajduje się `r procent` % kompletnych wartości
 
-{r}
-VIM::aggr(lifestyle, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(lifestyle), cex.axis=.7, gap=3, ylab=c("Procent braków danych","Wzorzec braków danych"))
+{r} VIM::aggr(lifestyle, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(lifestyle), cex.axis=.7, gap=3, ylab=c("Procent braków danych","Wzorzec braków danych"))
 
 ## walidacja danych
 
 **Definicja**
 
-{r}
-rules <- validator(
-  Age >= 18,
-  BMI >= 10 & BMI <= 50,
-  `Fat_Percentage` >= 5 & `Fat_Percentage` <= 60,
-  `Session_Duration` > 0,
-  `Calories_Burned` >= 0,
-  `Resting_BPM` >= 40 & `Resting_BPM` <= 120)
+{r} rules \<- validator( Age \>= 18, BMI \>= 10 & BMI \<= 50, `Fat_Percentage` \>= 5 & `Fat_Percentage` \<= 60, `Session_Duration` \> 0, `Calories_Burned` \>= 0, `Resting_BPM` \>= 40 & `Resting_BPM` \<= 120)
 
-
-cf <- confront(lifestyle, rules)
-summary(cf)
-barplot(cf)
+cf \<- confront(lifestyle, rules) summary(cf) barplot(cf)
 
 ## wizualizacja danych
 
 # 1. Typ treningu × Czas trwania → Spalone kalorie
 
-ggplot(lifestyle, aes(x = `Session_Duration (hours)`, 
-                      y = Calories_Burned, 
-                      color = Workout_Type)) +
-  geom_point(alpha = 0.6, size = 2) +
-  geom_smooth(method = "lm", se = FALSE) + # Linie trendu dla każdego typu
-  labs(title = "Relacja: Czas trwania a spalone kalorie wg typu treningu",
-       x = "Czas trwania sesji (godziny)",
-       y = "Spalone kalorie",
-       color = "Typ treningu") +
-  scale_color_viridis_d()
+ggplot(lifestyle, aes(x = `Session_Duration (hours)`, y = Calories_Burned, color = Workout_Type)) + geom_point(alpha = 0.6, size = 2) + geom_smooth(method = "lm", se = FALSE) + \# Linie trendu dla każdego typu labs(title = "Relacja: Czas trwania a spalone kalorie wg typu treningu", x = "Czas trwania sesji (godziny)", y = "Spalone kalorie", color = "Typ treningu") + scale_color_viridis_d()
 
 #Analiza wykazuje, że typ stosowanej diety nie ma istotnego wpływu na wskaźnik BMI, natomiast liczba spalonych kalorii rośnie liniowo wraz z częstotliwością treningów, niezależnie od wieku i płci uczestników. Zdecydowanie najwyższą efektywność metaboliczną osiąga trening HIIT, który pozwala spalić najwięcej kalorii w najkrótszym czasie, podczas gdy joga wymaga znacznie dłuższych sesji, aby osiągnąć zbliżony wynik.
 
 # 2. Typ diety × Procent tkanki tłuszczowej / BMI
 
-plot_ly(df, x = ~diet_type, y = ~Fats,
-        type = "box", color = ~diet_type)
+plot_ly(df, x = \~diet_type, y = \~Fats, type = "box", color = \~diet_type)
 
-plot_ly(df, x = ~diet_type, y = ~BMI,
-        type = "box", color = ~diet_type)
+plot_ly(df, x = \~diet_type, y = \~BMI, type = "box", color = \~diet_type)
 
-
-ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) +
-  geom_violin(trim = FALSE, alpha = 0.6) + # Rysuje kształt rozkładu
-  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) + 
-  labs(title = "Rozkład BMI w zależności od diety", 
-       x = "Typ diety", 
-       y = "BMI") +
-  theme_minimal() +
-  theme(legend.position = "none")
+ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) + geom_violin(trim = FALSE, alpha = 0.6) + \# Rysuje kształt rozkładu geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) + labs(title = "Rozkład BMI w zależności od diety", x = "Typ diety", y = "BMI") + theme_minimal() + theme(legend.position = "none")
 
 #Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest niemal identyczny dla wszystkich grup dietetycznych, z medianą oscylującą stabilnie wokół wartości 24-25. Dowodzi to, że w badanej populacji sam typ stosowanej diety nie jest czynnikiem różnicującym masę ciała uczestników.
 
-#Interpretacja: 
-
+#Interpretacja:
 
 # 3. Poziom doświadczenia × Tętno spoczynkowe / Średnie tętno podczas treningu
 
-lifestyle_long_bpm <- lifestyle %>%
-  select(Experience_Level, Resting_BPM, Avg_BPM) %>% 
-  pivot_longer(cols = c(Resting_BPM, Avg_BPM), 
-               names_to = "Typ_Tetna", 
-               values_to = "BPM")
+lifestyle_long_bpm \<- lifestyle %\>% select(Experience_Level, Resting_BPM, Avg_BPM) %\>% pivot_longer(cols = c(Resting_BPM, Avg_BPM), names_to = "Typ_Tetna", values_to = "BPM")
 
-ggplot(lifestyle_long_bpm, aes(x = Experience_Level, y = BPM, fill = Typ_Tetna)) +
-  geom_violin(trim = FALSE, alpha = 0.5) +
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), alpha = 0.8) +
-  labs(title = "Tętno a poziom doświadczenia",
-       x = "Poziom doświadczenia",
-       y = "Tętno (BPM)",
-       fill = "Rodzaj pomiaru") +
-  scale_fill_manual(values = c("steelblue", "salmon"), 
-                    labels = c("Średnie treningowe", "Spoczynkowe"))
-#Analiza wykazuje wyraźną fizjologiczną różnicę między mierzonymi parametrami: tętno spoczynkowe oscyluje stabilnie wokół 60-65 BPM, podczas gdy tętno treningowe jest średnio ponad dwukrotnie wyższe (ok. 145 BPM) i charakteryzuje się większą zmiennością. Dane potwierdzają prawidłową reakcję organizmów uczestników na wysiłek fizyczny, niezależnie od ich poziomu zaawansowania.
+ggplot(lifestyle_long_bpm, aes(x = Experience_Level, y = BPM, fill = Typ_Tetna)) + geom_violin(trim = FALSE, alpha = 0.5) + geom_boxplot(width = 0.2, position = position_dodge(0.9), alpha = 0.8) + labs(title = "Tętno a poziom doświadczenia", x = "Poziom doświadczenia", y = "Tętno (BPM)", fill = "Rodzaj pomiaru") + scale_fill_manual(values = c("steelblue", "salmon"), labels = c("Średnie treningowe", "Spoczynkowe")) #Analiza wykazuje wyraźną fizjologiczną różnicę między mierzonymi parametrami: tętno spoczynkowe oscyluje stabilnie wokół 60-65 BPM, podczas gdy tętno treningowe jest średnio ponad dwukrotnie wyższe (ok. 145 BPM) i charakteryzuje się większą zmiennością. Dane potwierdzają prawidłową reakcję organizmów uczestników na wysiłek fizyczny, niezależnie od ich poziomu zaawansowania.
 
 # 4. Częstotliwość treningów × Spalone kalorie (kontrolując Wiek i Płeć)
 
-ggplot(lifestyle, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned)) +
-  geom_jitter(aes(color = Age), width = 0.2, alpha = 0.7) +
-  geom_smooth(method = "lm", color = "black", se = TRUE) +
-  facet_wrap(~Gender) + # Podział na panele Mężczyzna/Kobieta
-  scale_color_viridis_c(option = "magma") +
-  labs(title = "Wpływ częstotliwości treningów na spalanie kalorii",
-       subtitle = "Z podziałem na płeć i wiek",
-       x = "Liczba treningów w tygodniu",
-       y = "Spalone kalorie",
-       color = "Wiek")
-#Dane wykazują silną, liniową zależność, w której zwiększenie częstotliwości treningów bezpośrednio przekłada się na wzrost liczby spalonych kalorii, przy czym trend ten jest niemal identyczny dla obu płci. Równomierne rozproszenie punktów reprezentujących wiek dowodzi, że korzyści z częstszej aktywności są niezależne od metryki uczestnika.
+ggplot(lifestyle, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned)) + geom_jitter(aes(color = Age), width = 0.2, alpha = 0.7) + geom_smooth(method = "lm", color = "black", se = TRUE) + facet_wrap(\~Gender) + \# Podział na panele Mężczyzna/Kobieta scale_color_viridis_c(option = "magma") + labs(title = "Wpływ częstotliwości treningów na spalanie kalorii", subtitle = "Z podziałem na płeć i wiek", x = "Liczba treningów w tygodniu", y = "Spalone kalorie", color = "Wiek") #Dane wykazują silną, liniową zależność, w której zwiększenie częstotliwości treningów bezpośrednio przekłada się na wzrost liczby spalonych kalorii, przy czym trend ten jest niemal identyczny dla obu płci. Równomierne rozproszenie punktów reprezentujących wiek dowodzi, że korzyści z częstszej aktywności są niezależne od metryki uczestnika.
 
+# Mapa korrelacji
+
+dane_do_korelacji <- lifestyle %>%
+  select(Age, `Weight (kg)`, `Height (m)`, BMI, Fat_Percentage, 
+         `Session_Duration (hours)`, Calories_Burned, Avg_BPM, 
+         Resting_BPM, `Workout_Frequency (days/week)`)
+macierz_korelacji <- cor(dane_do_korelacji, use = "complete.obs")
+dane_wykres <- as.data.frame(macierz_korelacji) %>%
+  rownames_to_column(var = "Zmienna1") %>%
+  pivot_longer(cols = -Zmienna1, names_to = "Zmienna2", values_to = "Korelacja")
+ggplot(dane_wykres, aes(x = Zmienna1, y = Zmienna2, fill = Korelacja)) +
+  geom_tile(color = "white") + # Rysuje kwadraty
+  scale_fill_gradient2(low = "steelblue", high = "firebrick", mid = "white", 
+                       midpoint = 0, limit = c(-1,1), name="Korelacja") +
+  geom_text(aes(label = round(Korelacja, 2)), color = "black", size = 3) +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) + # Obraca podpisy osi X
+  labs(title = "Mapa Korelacji Zmiennych", 
+       x = "", 
+       y = "") +
+  coord_fixed()
