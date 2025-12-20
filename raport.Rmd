@@ -122,6 +122,7 @@ ggplot(lifestyle, aes(x = `Session_Duration (hours)`,
        color = "Typ treningu") +
   scale_color_viridis_d()
 
+#Analiza wykazuje, że typ stosowanej diety nie ma istotnego wpływu na wskaźnik BMI, natomiast liczba spalonych kalorii rośnie liniowo wraz z częstotliwością treningów, niezależnie od wieku i płci uczestników. Zdecydowanie najwyższą efektywność metaboliczną osiąga trening HIIT, który pozwala spalić najwięcej kalorii w najkrótszym czasie, podczas gdy joga wymaga znacznie dłuższych sesji, aby osiągnąć zbliżony wynik.
 
 # 2. Typ diety × Procent tkanki tłuszczowej / BMI
 
@@ -140,6 +141,8 @@ ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) +
        y = "BMI") +
   theme_minimal() +
   theme(legend.position = "none")
+
+#Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest niemal identyczny dla wszystkich grup dietetycznych, z medianą oscylującą stabilnie wokół wartości 24-25. Dowodzi to, że w badanej populacji sam typ stosowanej diety nie jest czynnikiem różnicującym masę ciała uczestników.
 
 #Interpretacja: 
 
@@ -161,7 +164,7 @@ ggplot(lifestyle_long_bpm, aes(x = Experience_Level, y = BPM, fill = Typ_Tetna))
        fill = "Rodzaj pomiaru") +
   scale_fill_manual(values = c("steelblue", "salmon"), 
                     labels = c("Średnie treningowe", "Spoczynkowe"))
-
+#Analiza wykazuje wyraźną fizjologiczną różnicę między mierzonymi parametrami: tętno spoczynkowe oscyluje stabilnie wokół 60-65 BPM, podczas gdy tętno treningowe jest średnio ponad dwukrotnie wyższe (ok. 145 BPM) i charakteryzuje się większą zmiennością. Dane potwierdzają prawidłową reakcję organizmów uczestników na wysiłek fizyczny, niezależnie od ich poziomu zaawansowania.
 
 # 4. Częstotliwość treningów × Spalone kalorie (kontrolując Wiek i Płeć)
 
@@ -175,4 +178,5 @@ ggplot(lifestyle, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned))
        x = "Liczba treningów w tygodniu",
        y = "Spalone kalorie",
        color = "Wiek")
+#Dane wykazują silną, liniową zależność, w której zwiększenie częstotliwości treningów bezpośrednio przekłada się na wzrost liczby spalonych kalorii, przy czym trend ten jest niemal identyczny dla obu płci. Równomierne rozproszenie punktów reprezentujących wiek dowodzi, że korzyści z częstszej aktywności są niezależne od metryki uczestnika.
 
