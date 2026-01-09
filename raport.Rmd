@@ -9,6 +9,7 @@ output:
     downcute_theme: "default"
 ---
 
+
 \`\`\`{r setup, include=FALSE} \## Global options knitr::opts_chunk\$set(cache = TRUE) library(tidyverse) library(naniar) library(VIM) library(validate) library(validatetools) library(dcmodify) library(errorlocate) lifestyle \<- read_csv("dane/Final_data.csv")
 
 # Wstęp
@@ -65,7 +66,20 @@ cf \<- confront(lifestyle, rules) summary(cf) barplot(cf)
 
 # 1. Typ treningu × Czas trwania → Spalone kalorie
 
-ggplot(lifestyle, aes(x = `Session_Duration (hours)`, y = Calories_Burned, color = Workout_Type)) + geom_point(alpha = 0.6, size = 2) + geom_smooth(method = "lm", se = FALSE) + \# Linie trendu dla każdego typu labs(title = "Relacja: Czas trwania a spalone kalorie wg typu treningu", x = "Czas trwania sesji (godziny)", y = "Spalone kalorie", color = "Typ treningu") + scale_color_viridis_d()
+ggplot(lifestyle,
+aes(x = `Session_Duration (hours)`,
+y = Calories_Burned,
+color = Workout_Type)) +
+geom_point(alpha = 0.6) +
+geom_smooth(method = "lm", se = FALSE) +
+labs(
+title = "Czas trwania treningu a spalone kalorie",
+x = "Czas trwania sesji (godziny)",
+y = "Spalone kalorie",
+color = "Typ treningu"
+) +
+scale_color_viridis_d() +
+theme_minimal()
 
 Analiza wykazuje, że typ stosowanej diety nie ma istotnego wpływu na wskaźnik BMI, natomiast liczba spalonych kalorii rośnie liniowo wraz z częstotliwością treningów, niezależnie od wieku i płci uczestników. Zdecydowanie najwyższą efektywność metaboliczną osiąga trening HIIT, który pozwala spalić najwięcej kalorii w najkrótszym czasie, podczas gdy joga wymaga znacznie dłuższych sesji, aby osiągnąć zbliżony wynik.
 
@@ -77,6 +91,7 @@ plot_ly(df, x = \~diet_type, y = \~BMI, type = "box", color = \~diet_type)
 
 ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) + geom_violin(trim = FALSE, alpha = 0.6) + \# Rysuje kształt rozkładu geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) + labs(title = "Rozkład BMI w zależności od diety", x = "Typ diety", y = "BMI") + theme_minimal() + theme(legend.position = "none")
 
+
 Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest niemal identyczny dla wszystkich grup dietetycznych, z medianą oscylującą stabilnie wokół wartości 24-25. Dowodzi to, że w badanej populacji sam typ stosowanej diety nie jest czynnikiem różnicującym masę ciała uczestników.
 
 #Interpretacja:
@@ -86,6 +101,7 @@ Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest n
 lifestyle_long_bpm \<- lifestyle %\>% select(Experience_Level, Resting_BPM, Avg_BPM) %\>% pivot_longer(cols = c(Resting_BPM, Avg_BPM), names_to = "Typ_Tetna", values_to = "BPM")
 
 ggplot(lifestyle_long_bpm, aes(x = Experience_Level, y = BPM, fill = Typ_Tetna)) + geom_violin(trim = FALSE, alpha = 0.5) + geom_boxplot(width = 0.2, position = position_dodge(0.9), alpha = 0.8) + labs(title = "Tętno a poziom doświadczenia", x = "Poziom doświadczenia", y = "Tętno (BPM)", fill = "Rodzaj pomiaru") + scale_fill_manual(values = c("steelblue", "salmon"), labels = c("Średnie treningowe", "Spoczynkowe")) 
+
 
 Analiza wykazuje wyraźną fizjologiczną różnicę między mierzonymi parametrami: tętno spoczynkowe oscyluje stabilnie wokół 60-65 BPM, podczas gdy tętno treningowe jest średnio ponad dwukrotnie wyższe (ok. 145 BPM) i charakteryzuje się większą zmiennością. Dane potwierdzają prawidłową reakcję organizmów uczestników na wysiłek fizyczny, niezależnie od ich poziomu zaawansowania.
 
@@ -110,3 +126,4 @@ Analiza wykazuje umiarkowaną, dodatnią korelację, wskazującą, że uczestnic
 # Mapa korrelacji
 
 dane_do_korelacji \<- lifestyle %\>% select(Age, `Weight (kg)`, `Height (m)`, BMI, Fat_Percentage, `Session_Duration (hours)`, Calories_Burned, Avg_BPM, Resting_BPM, `Workout_Frequency (days/week)`) macierz_korelacji \<- cor(dane_do_korelacji, use = "complete.obs") dane_wykres \<- as.data.frame(macierz_korelacji) %\>% rownames_to_column(var = "Zmienna1") %\>% pivot_longer(cols = -Zmienna1, names_to = "Zmienna2", values_to = "Korelacja") ggplot(dane_wykres, aes(x = Zmienna1, y = Zmienna2, fill = Korelacja)) + geom_tile(color = "white") + \# Rysuje kwadraty scale_fill_gradient2(low = "steelblue", high = "firebrick", mid = "white", midpoint = 0, limit = c(-1,1), name="Korelacja") + geom_text(aes(label = round(Korelacja, 2)), color = "black", size = 3) + theme_minimal() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) + \# Obraca podpisy osi X labs(title = "Mapa Korelacji Zmiennych", x = "", y = "") + coord_fixed()
+
