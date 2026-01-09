@@ -151,9 +151,6 @@ Analiza wykazuje, że typ stosowanej diety nie ma istotnego wpływu na wskaźnik
 # Wykres interaktywny Plotly - Boxplot Tłuszcze
 plot_ly(lifestyle, x = ~diet_type, y = ~Fats, type = "box", color = ~diet_type)
 
-# Wykres interaktywny Plotly - Boxplot BMI
-plot_ly(lifestyle, x = ~diet_type, y = ~BMI, type = "box", color = ~diet_type)
-
 # Wykres statyczny ggplot - Violin plot
 ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) + 
   geom_violin(trim = FALSE, alpha = 0.6) + 
@@ -165,7 +162,6 @@ ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) +
 
 Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest niemal identyczny dla wszystkich grup dietetycznych, z medianą oscylującą stabilnie wokół wartości 24-25. Dowodzi to, że w badanej populacji sam typ stosowanej diety nie jest czynnikiem różnicującym masę ciała uczestników.
 
-#Interpretacja:
 
 # 3. Poziom doświadczenia × Tętno spoczynkowe / Średnie tętno podczas treningu
 
@@ -209,7 +205,6 @@ Dane wykazują silną, liniową zależność, w której zwiększenie częstotliw
 
 ```{r, echo=FALSE}
 # Wykres 5: Metoda gotowania a czas przygotowania
-# Używamy koloru zależnego od metody gotowania, bo nie mamy zmiennej 'Zdrowy_posilek'
 
 ggplot(lifestyle, aes(x = cooking_method, y = prep_time_min, fill = cooking_method)) + 
   geom_boxplot(alpha = 0.7, outlier.shape = NA) + 
@@ -240,32 +235,61 @@ ggplot(lifestyle, aes(x = `Water_Intake (liters)`, y = `Session_Duration (hours)
   theme(plot.title = element_text(face = "bold"), legend.position = "right")
 ```
 
-Analiza wykazuje umiarkowaną, dodatnią korelację, wskazującą, że uczestnicy spożywający większe ilości wody zazwyczaj wykonują dłuższe sesje treningowe. Jednocześnie rozkład kolorów ujawnia, że osoby trenujące najczęściej (4-5 razy w tygodniu) dbają o najwyższy poziom nawodnienia, co potwierdza naturalny związek między intensywnością wysiłku a zapotrzebowaniem organizmu na płyny.
+Wykres przedstawia dodatnią korelację między czasem trwania treningu a spożyciem wody. Widoczna tendencja wzrostowa (czerwona linia) potwierdza, że dłuższy wysiłek fizyczny wiąże się z większym zapotrzebowaniem na płyny.
 
-# Mapa korrelacji
+Dodatkowo, analiza kolorystyczna ujawnia wyraźną klasteryzację grup. Osoby trenujące najczęściej (5 razy w tygodniu - kolor żółty) dominują w górnych partiach wykresu, co oznacza, że to właśnie ta grupa wykonuje najdłuższe sesje treningowe (dochodzące do 2 godzin) i dba o najwyższy poziom nawodnienia.
 
-```{r, fig.width=10, fig.height=8, echo=FALSE}
-# Wybór kolumn numerycznych do korelacji
-dane_do_korelacji <- lifestyle %>% 
-  select(where(is.numeric)) 
-  # Możesz też wybrać konkretne kolumny ręcznie, jeśli powyższe wybierze za dużo:
-  # select(Age, `Weight (kg)`, `Height (m)`, BMI, Fat_Percentage, 
-  #        `Session_Duration (hours)`, Calories_Burned, Avg_BPM, Resting_BPM, 
-  #        `Workout_Frequency (days/week)`)
+Widoczne 'pionowe słupki' żółtych punktów wynikają z dużej liczby obserwacji o identycznych wartościach maksymalnych (np. równe 2 godziny treningu), co sugeruje, że najbardziej aktywni użytkownicy często raportują maksymalne dostępne wartości w ankiecie.
 
-macierz_korelacji <- cor(dane_do_korelacji, use = "complete.obs")
+# Mapa korelacji
 
-dane_wykres <- as.data.frame(macierz_korelacji) %>% 
-  rownames_to_column(var = "Zmienna1") %>% 
+```{r, echo=FALSE}
+wazne_zmienne <- lifestyle %>%
+  select(Age, 
+         BMI, 
+         Fat_Percentage, 
+         `Session_Duration (hours)`, 
+         Calories_Burned, 
+         Resting_BPM, 
+         Avg_BPM, 
+         `Workout_Frequency (days/week)`, 
+         `Water_Intake (liters)`,
+         prep_time_min) %>%
+  na.omit() 
+
+# Obliczamy korelację
+macierz <- cor(wazne_zmienne)
+
+dane_wykres <- as.data.frame(macierz) %>%
+  rownames_to_column(var = "Zmienna1") %>%
   pivot_longer(cols = -Zmienna1, names_to = "Zmienna2", values_to = "Korelacja")
 
-ggplot(dane_wykres, aes(x = Zmienna1, y = Zmienna2, fill = Korelacja)) + 
-  geom_tile(color = "white") + 
+ggplot(dane_wykres, aes(x = Zmienna1, y = Zmienna2, fill = Korelacja)) +
+  geom_tile(color = "white") +
   scale_fill_gradient2(low = "steelblue", high = "firebrick", mid = "white", 
-                       midpoint = 0, limit = c(-1,1), name="Korelacja") + 
-  geom_text(aes(label = round(Korelacja, 2)), color = "black", size = 3) + 
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) + 
-  labs(title = "Mapa Korelacji Zmiennych", x = "", y = "") + 
+                       midpoint = 0, limit = c(-1,1), name="Korelacja") +
+  geom_text(aes(label = round(Korelacja, 1)), color = "black", size = 3) + 
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    axis.title = element_blank()
+  ) +
+  labs(title = "Mapa Korelacji (Kluczowe Zmienne)") +
   coord_fixed()
 ```
+
+Wnioski z analizy korelacji zmiennych
+
+Przeprowadzona analiza macierzy korelacji pozwoliła na zidentyfikowanie kluczowych zależności statystycznych w badanym zbiorze danych: 
+
+* Czas trwania sesji jako główny predyktor wydatku energetycznego - najsilniejsza odnotowana korelacja w całym zbiorze ($r = 0,8$) występuje pomiędzy czasem trwania treningu a liczbą spalonych kalorii. Wskazuje to jednoznacznie, że objętość czasowa treningu jest decydującym czynnikiem wpływającym na efektywność spalania, przewyższając istotnością inne zmienne treningowe.
+
+* Wysoka spójność wskaźników biometrycznych - odnotowano bardzo silną, dodatnią korelację ($r = 0,9$) pomiędzy wskaźnikiem BMI a procentową zawartością tkanki tłuszczowej. Oznacza to, że w badanej populacji BMI jest wysoce wiarygodnym i precyzyjnym wskaźnikiem odzwierciedlającym otłuszczenie organizmu, co potwierdza jego użyteczność diagnostyczną w tym kontekście.
+
+* Charakterystyka grupy o wysokiej aktywności ("High Performers") - istnieje wyraźny związek ($r = 0,6$) między częstotliwością treningów w tygodniu a czasem trwania pojedynczej sesji. Sugeruje to istnienie specyficznego profilu użytkownika: osoby trenujące częściej (4-5 razy w tygodniu) mają tendencję do wykonywania dłuższych jednostek treningowych, co skutkuje kumulatywnym efektem w postaci znacznie wyższego tygodniowego wydatku energetycznego.
+
+* Wiek jako zmienna neutralna - analiza wykazała brak istotnej statystycznie korelacji ($r \approx 0$) między wiekiem uczestników a ich wynikami treningowymi (czas trwania, spalone kalorie) czy parametrami sylwetkowymi (BMI). Jest to istotny wniosek socjologiczny, sugerujący, że w badanej grupie wiek nie stanowi bariery dla utrzymania wysokiej intensywności treningowej ani nie determinuje negatywnie kompozycji ciała.
+
+* Fizjologiczna adaptacja nawodnienia - umiarkowana korelacja dodatnia ($r = 0,3$) między spożyciem wody a parametrami wysiłkowymi potwierdza prawidłowe zachowania zdrowotne uczestników – wzrost obciążenia fizycznego naturalnie pociąga za sobą zwiększoną podaż płynów.
+
+* Niezależność nawyków kulinarnych - czas poświęcony na przygotowanie posiłków nie wykazuje związku z parametrami zdrowotnymi ani treningowymi. Obala to hipotezę, jakoby zdrowszy styl życia czy lepsza sylwetka wymagały dłuższego czasu spędzanego w kuchni; kluczowa wydaje się być jakość, a nie czasochłonność diety.
