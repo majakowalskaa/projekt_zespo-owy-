@@ -8,6 +8,7 @@ output:
     default_style: "light"
     downcute_theme: "default"
 ---
+
 ```{r setup, include=FALSE}
 # Opcje globalne dla wszystkich bloków kodu
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE)
@@ -23,11 +24,9 @@ library(errorlocate)
 library(plotly)
 ```
 
-
 ```{r,echo=FALSE}
 lifestyle <- read_csv("dane/Final_data.csv")
 ```
-
 
 # Wstęp
 
@@ -61,28 +60,28 @@ Zbiór danych zawiera `r nrow(lifestyle)` obserwacji i `r ncol(lifestyle)` zmien
 
 Poniżej znajduje się opis najważniejszych zmiennych:
 
-* `Wiek`: wiek uczestnika w latach.
-* `Płeć`: płeć uczestnika (Mężczyzna/Kobieta).
-* `BMI`: wskaźnik masy ciała uczestnika.
-* `Procent tkanki tłuszczowej`: procentowa zawartość tkanki tłuszczowej w organizmie uczestnika.
-* `Typ treningu`: kategoria treningu wykonywanego przez uczestnika (np. siłowy, cardio, mieszany).
-* `Czas trwania sesji`: czas trwania jednej sesji treningowej w minutach.
-* `Liczba spalonych kalorii`: liczba kalorii spalonych podczas jednej sesji treningowej.
-* `Typ diety`: kategoria diety stosowanej przez uczestnika.
-* `Poziom doświadczenia`: poziom zaawansowania uczestnika w treningach.
-* `Tętno spoczynkowe`: tętno uczestnika w stanie spoczynku.
-* `Średnie tętno podczas treningu`: średnie tętno uczestnika podczas sesji treningowej.
-* `Częstotliwość treningów`: liczba treningów wykonywanych przez uczestnika w tygodniu.
-* `Metoda gotowania`: sposób przygotowania posiłków.
-* `Czas przygotowania`: czas potrzebny na przygotowanie posiłku w minutach.
-* `Zdrowy posiłek`: wskaźnik, czy posiłek jest uważany za zdrowy (Tak/Nie).
-* `Spożycie wody`: ilość wody spożywanej przez uczestnika dziennie w litrach.
+-   `Wiek`: wiek uczestnika w latach.
+-   `Płeć`: płeć uczestnika (Mężczyzna/Kobieta).
+-   `BMI`: wskaźnik masy ciała uczestnika.
+-   `Procent tkanki tłuszczowej`: procentowa zawartość tkanki tłuszczowej w organizmie uczestnika.
+-   `Typ treningu`: kategoria treningu wykonywanego przez uczestnika (np. siłowy, cardio, mieszany).
+-   `Czas trwania sesji`: czas trwania jednej sesji treningowej w minutach.
+-   `Liczba spalonych kalorii`: liczba kalorii spalonych podczas jednej sesji treningowej.
+-   `Typ diety`: kategoria diety stosowanej przez uczestnika.
+-   `Poziom doświadczenia`: poziom zaawansowania uczestnika w treningach.
+-   `Tętno spoczynkowe`: tętno uczestnika w stanie spoczynku.
+-   `Średnie tętno podczas treningu`: średnie tętno uczestnika podczas sesji treningowej.
+-   `Częstotliwość treningów`: liczba treningów wykonywanych przez uczestnika w tygodniu.
+-   `Metoda gotowania`: sposób przygotowania posiłków.
+-   `Czas przygotowania`: czas potrzebny na przygotowanie posiłku w minutach.
+-   `Zdrowy posiłek`: wskaźnik, czy posiłek jest uważany za zdrowy (Tak/Nie).
+-   `Spożycie wody`: ilość wody spożywanej przez uczestnika dziennie w litrach.
 
 # 2. Porządkowanie i czyszczenie danych
 
 # 2.1 Braki danych
 
-```{r, echo=FALSE} 
+```{r, echo=FALSE}
 procent <- prop_complete_var(lifestyle)*100
 ```
 
@@ -141,7 +140,7 @@ color = "Typ treningu"
 ) +
 scale_color_viridis_d() +
 theme_minimal()
-``` 
+```
 
 Analiza wykazuje, że typ stosowanej diety nie ma istotnego wpływu na wskaźnik BMI, natomiast liczba spalonych kalorii rośnie liniowo wraz z częstotliwością treningów, niezależnie od wieku i płci uczestników. Zdecydowanie najwyższą efektywność metaboliczną osiąga trening HIIT, który pozwala spalić najwięcej kalorii w najkrótszym czasie, podczas gdy joga wymaga znacznie dłuższych sesji, aby osiągnąć zbliżony wynik.
 
@@ -161,7 +160,6 @@ ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) +
 ```
 
 Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest niemal identyczny dla wszystkich grup dietetycznych, z medianą oscylującą stabilnie wokół wartości 24-25. Dowodzi to, że w badanej populacji sam typ stosowanej diety nie jest czynnikiem różnicującym masę ciała uczestników.
-
 
 # 3. Poziom doświadczenia × Tętno spoczynkowe / Średnie tętno podczas treningu
 
@@ -280,16 +278,16 @@ ggplot(dane_wykres, aes(x = Zmienna1, y = Zmienna2, fill = Korelacja)) +
 
 Wnioski z analizy korelacji zmiennych
 
-Przeprowadzona analiza macierzy korelacji pozwoliła na zidentyfikowanie kluczowych zależności statystycznych w badanym zbiorze danych: 
+Przeprowadzona analiza macierzy korelacji pozwoliła na zidentyfikowanie kluczowych zależności statystycznych w badanym zbiorze danych:
 
-* Czas trwania sesji jako główny predyktor wydatku energetycznego - najsilniejsza odnotowana korelacja w całym zbiorze ($r = 0,8$) występuje pomiędzy czasem trwania treningu a liczbą spalonych kalorii. Wskazuje to jednoznacznie, że objętość czasowa treningu jest decydującym czynnikiem wpływającym na efektywność spalania, przewyższając istotnością inne zmienne treningowe.
+-   Czas trwania sesji jako główny predyktor wydatku energetycznego - najsilniejsza odnotowana korelacja w całym zbiorze ($r = 0,8$) występuje pomiędzy czasem trwania treningu a liczbą spalonych kalorii. Wskazuje to jednoznacznie, że objętość czasowa treningu jest decydującym czynnikiem wpływającym na efektywność spalania, przewyższając istotnością inne zmienne treningowe.
 
-* Wysoka spójność wskaźników biometrycznych - odnotowano bardzo silną, dodatnią korelację ($r = 0,9$) pomiędzy wskaźnikiem BMI a procentową zawartością tkanki tłuszczowej. Oznacza to, że w badanej populacji BMI jest wysoce wiarygodnym i precyzyjnym wskaźnikiem odzwierciedlającym otłuszczenie organizmu, co potwierdza jego użyteczność diagnostyczną w tym kontekście.
+-   Wysoka spójność wskaźników biometrycznych - odnotowano bardzo silną, dodatnią korelację ($r = 0,9$) pomiędzy wskaźnikiem BMI a procentową zawartością tkanki tłuszczowej. Oznacza to, że w badanej populacji BMI jest wysoce wiarygodnym i precyzyjnym wskaźnikiem odzwierciedlającym otłuszczenie organizmu, co potwierdza jego użyteczność diagnostyczną w tym kontekście.
 
-* Charakterystyka grupy o wysokiej aktywności ("High Performers") - istnieje wyraźny związek ($r = 0,6$) między częstotliwością treningów w tygodniu a czasem trwania pojedynczej sesji. Sugeruje to istnienie specyficznego profilu użytkownika: osoby trenujące częściej (4-5 razy w tygodniu) mają tendencję do wykonywania dłuższych jednostek treningowych, co skutkuje kumulatywnym efektem w postaci znacznie wyższego tygodniowego wydatku energetycznego.
+-   Charakterystyka grupy o wysokiej aktywności ("High Performers") - istnieje wyraźny związek ($r = 0,6$) między częstotliwością treningów w tygodniu a czasem trwania pojedynczej sesji. Sugeruje to istnienie specyficznego profilu użytkownika: osoby trenujące częściej (4-5 razy w tygodniu) mają tendencję do wykonywania dłuższych jednostek treningowych, co skutkuje kumulatywnym efektem w postaci znacznie wyższego tygodniowego wydatku energetycznego.
 
-* Wiek jako zmienna neutralna - analiza wykazała brak istotnej statystycznie korelacji ($r \approx 0$) między wiekiem uczestników a ich wynikami treningowymi (czas trwania, spalone kalorie) czy parametrami sylwetkowymi (BMI). Jest to istotny wniosek socjologiczny, sugerujący, że w badanej grupie wiek nie stanowi bariery dla utrzymania wysokiej intensywności treningowej ani nie determinuje negatywnie kompozycji ciała.
+-   Wiek jako zmienna neutralna - analiza wykazała brak istotnej statystycznie korelacji ($r \approx 0$) między wiekiem uczestników a ich wynikami treningowymi (czas trwania, spalone kalorie) czy parametrami sylwetkowymi (BMI). Jest to istotny wniosek socjologiczny, sugerujący, że w badanej grupie wiek nie stanowi bariery dla utrzymania wysokiej intensywności treningowej ani nie determinuje negatywnie kompozycji ciała.
 
-* Fizjologiczna adaptacja nawodnienia - umiarkowana korelacja dodatnia ($r = 0,3$) między spożyciem wody a parametrami wysiłkowymi potwierdza prawidłowe zachowania zdrowotne uczestników – wzrost obciążenia fizycznego naturalnie pociąga za sobą zwiększoną podaż płynów.
+-   Fizjologiczna adaptacja nawodnienia - umiarkowana korelacja dodatnia ($r = 0,3$) między spożyciem wody a parametrami wysiłkowymi potwierdza prawidłowe zachowania zdrowotne uczestników – wzrost obciążenia fizycznego naturalnie pociąga za sobą zwiększoną podaż płynów.
 
-* Niezależność nawyków kulinarnych - czas poświęcony na przygotowanie posiłków nie wykazuje związku z parametrami zdrowotnymi ani treningowymi. Obala to hipotezę, jakoby zdrowszy styl życia czy lepsza sylwetka wymagały dłuższego czasu spędzanego w kuchni; kluczowa wydaje się być jakość, a nie czasochłonność diety.
+-   Niezależność nawyków kulinarnych - czas poświęcony na przygotowanie posiłków nie wykazuje związku z parametrami zdrowotnymi ani treningowymi. Obala to hipotezę, jakoby zdrowszy styl życia czy lepsza sylwetka wymagały dłuższego czasu spędzanego w kuchni; kluczowa wydaje się być jakość, a nie czasochłonność diety.
