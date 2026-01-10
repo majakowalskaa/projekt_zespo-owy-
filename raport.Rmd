@@ -216,13 +216,14 @@ ggplot(lifestyle, aes(x = cooking_method, y = prep_time_min, fill = cooking_meth
   theme_minimal() + 
   theme(plot.title = element_text(face = "bold"), 
         axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
-`ggbetweenstats(
+```{r, echo=FALSE}
+ggbetweenstats(
 data = lifestyle,
   x = cooking_method,      
   y = prep_time_min,
 type = "nonparametric"
-)`
 ```
 
 Analiza wykresu wykazuje, że czas przygotowania posiłków ocenianych jako zdrowe jest niemal identyczny jak w przypadku posiłków ocenianych niżej, niezależnie od zastosowanej metody obróbki termicznej. Oznacza to, że przygotowanie pełnowartościowego dania nie wymaga poświęcenia większej ilości czasu niż przygotowanie posiłku uznawanego za mniej zdrowy.
