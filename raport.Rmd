@@ -407,6 +407,14 @@ tabela_opisowa <- tabela_opisowa[, c("n", "mean", "sd", "median", "min", "max", 
 knitr::kable(tabela_opisowa, digits = 2, caption = "Statystyki opisowe głównych parametrów biometrycznych i treningowych")
 ```
 
+Populacja badawcza charakteryzuje się stabilnymi parametrami biometrycznymi ze średnią wieku wynoszącą **38,85 lat**.
+
+-   **Wskaźnik BMI:** Średnia wartość **24,92** plasuje grupę na górnej granicy normy. Rozkład BMI wykazuje wyraźną **skośność dodatnią (0,78)**, co wskazuje na obecność grupy osób o znacznym stopniu nadwagi lub otyłości.
+
+-   **Wydatki energetyczne:** Średnie spalanie podczas sesji wynosi **1280,19 kcal**. Podobnie jak w przypadku BMI, zmienna ta jest prawostronnie skośna (0,68), co sugeruje, że mimo typowych wyników, istnieje grupa respondentów wykonująca treningi o ekstremalnej intensywności.
+
+-   **Dynamika treningowa:** Multimodalny rozkład czasu trwania sesji ($\bar{x} = 1,26$ h) potwierdza standaryzację bloków treningowych w badanej grupie.
+
 ```{r, echo=FALSE}
 library(tidyr)
 
@@ -422,12 +430,24 @@ ggplot(long_data, aes(x = Wartosc, fill = Zmienna)) +
   theme(legend.position = "none")
 ```
 
+Analiza rozkładów zmiennych ilościowych ujawnia zróżnicowaną charakterystykę badanych parametrów. Zmienne fizjologiczne, takie jak tętno (Resting_BPM i Avg_BPM) oraz wiek, wykazują rozkłady zbliżone do symetrycznych, co świadczy o zbalansowanym i reprezentatywnym doborze próby.
+
+Z kolei wskaźnik BMI oraz liczba spalonych kalorii charakteryzują się wyraźną **skośnością dodatnią**. Wskazuje to na koncentrację większości obserwacji w niższych i średnich przedziałach wartości, przy jednoczesnym występowaniu nielicznej grupy rekordów o charakterystyce ekstremalnej (np. bardzo wysokie BMI lub wyjątkowo wysoki wydatek energetyczny). Rozkład czasu trwania sesji ma charakter **multimodalny** z wyraźnymi pikami, co sugeruje, że aktywności nie są przypadkowe, lecz realizowane w ramach zdefiniowanych, standardowych bloków czasowych (np. 1h, 1.5h).
+
 ```{r, echo=FALSE}
 # Procentowy udział płci i typów treningu
 par(mfrow=c(1,2))
 pie(table(lifestyle_clean$Gender), main="Struktura płci", col=c("pink", "lightblue"))
 barplot(table(lifestyle_clean$Workout_Type), las=2, col="steelblue", main="Częstość typów treningu")
 ```
+
+#### **Demografia i równowaga płci**
+
+Zbiorowość jest podzielona niemal idealnie po połowie między kobiety (**Female**) a mężczyzn (**Male**). Taki rozkład pozwala na wyciąganie rzetelnych wniosków porównawczych, gdyż żadna z grup nie dominuje liczebnie, co minimalizuje ryzyko błędu statystycznego przy porównywaniu płci.
+
+#### **Popularność dyscyplin** 
+
+Wszystkie cztery analizowane kategorie (**Cardio, HIIT, Strength, Yoga**) wykazują zbliżoną liczebność, oscylującą wokół **5000 obserwacji** na każdy typ. Dane pochodzą z eksperymentu lub bazy o zaplanowanej strukturze, gdzie każda aktywność została udokumentowana z taką samą dokładnością. Pozwala to na precyzyjne porównanie efektywności np. Jogi względem HIIT na dużej próbie.
 
 ```{r, echo=FALSE}
 # Porównanie średnich w grupach
@@ -440,6 +460,8 @@ lifestyle_clean %>%
   ) %>%
   knitr::kable(digits = 2, caption = "Porównanie średnich parametrów w podziale na płeć")
 ```
+
+Różnice między kobietami a mężczyznami w tym zbiorze są **marginalne**. Średnie BMI dla obu grup znajduje się na granicy normy (ok. 24.9), a różnica w spalonych kaloriach wynosi mniej niż 1 kcal, co sugeruje, że płeć – w ujęciu ogólnym – nie jest głównym czynnikiem różnicującym wydatek energetyczny w tym modelu (liczy się raczej typ treningu i czas jego trwania).
 
 ### Mapa korelacji
 
@@ -478,21 +500,17 @@ ggplot(dane_wykres, aes(x = Zmienna1, y = Zmienna2, fill = Korelacja)) +
   coord_fixed()
 ```
 
-Wnioski z analizy korelacji zmiennych
+Analiza współczynników korelacji r-Pearsona ujawnia szereg istotnych zależności, które pozwalają na głębsze zrozumienie dynamiki badanych procesów treningowych i biometrycznych.
 
-Przeprowadzona analiza macierzy korelacji pozwoliła na zidentyfikowanie kluczowych zależności statystycznych w badanym zbiorze danych:
+Najsilniejszą odnotowaną synergię obserwujemy między wskaźnikiem BMI a procentową zawartością tkanki tłuszczowej, gdzie współczynnik korelacji na poziomie 0,9 potwierdza, że w badanej próbie masa ciała jest niemal bezpośrednim odzwierciedleniem kompozycji sylwetki.
 
--   Czas trwania sesji jako główny predyktor wydatku energetycznego - najsilniejsza odnotowana korelacja w całym zbiorze ($r = 0,8$) występuje pomiędzy czasem trwania treningu a liczbą spalonych kalorii. Wskazuje to jednoznacznie, że objętość czasowa treningu jest decydującym czynnikiem wpływającym na efektywność spalania, przewyższając istotnością inne zmienne treningowe.
+Równie kluczowe powiązania dotyczą bezpośredniej efektywności treningowej; czas trwania sesji wykazuje bardzo silny związek ze spalonymi kaloriami (r = 0,8), co definiuje objętość czasową jako nadrzędny czynnik determinujący całkowity wydatek energetyczny jednostki.
 
--   Wysoka spójność wskaźników biometrycznych - odnotowano bardzo silną, dodatnią korelację ($r = 0,9$) pomiędzy wskaźnikiem BMI a procentową zawartością tkanki tłuszczowej. Oznacza to, że w badanej populacji BMI jest wysoce wiarygodnym i precyzyjnym wskaźnikiem odzwierciedlającym otłuszczenie organizmu, co potwierdza jego użyteczność diagnostyczną w tym kontekście.
+Systematyczność mierzona częstotliwością treningów w skali tygodnia nie tylko istotnie wpływa na sumaryczne spalanie ($r = 0,6$), ale także wiąże się z tendencją do wydłużania pojedynczych jednostek treningowych ($r = 0,6$), co sugeruje, że osoby trenujące częściej wykazują wyższy poziom zaangażowania kondycyjnego.
 
--   Charakterystyka grupy o wysokiej aktywności ("High Performers") - istnieje wyraźny związek ($r = 0,6$) między częstotliwością treningów w tygodniu a czasem trwania pojedynczej sesji. Sugeruje to istnienie specyficznego profilu użytkownika: osoby trenujące częściej (4-5 razy w tygodniu) mają tendencję do wykonywania dłuższych jednostek treningowych, co skutkuje kumulatywnym efektem w postaci znacznie wyższego tygodniowego wydatku energetycznego.
+W obszarze zachowań prozdrowotnych dostrzegalna jest umiarkowana korelacja dodatnia podaży wody z czasem trwania wysiłku ($r = 0,3$), co wskazuje na wzrost świadomości potrzeb fizjologicznych organizmu wraz ze zwiększaniem obciążeń treningowych.
 
--   Wiek jako zmienna neutralna - analiza wykazała brak istotnej statystycznie korelacji ($r \approx 0$) między wiekiem uczestników a ich wynikami treningowymi (czas trwania, spalone kalorie) czy parametrami sylwetkowymi (BMI). Jest to istotny wniosek socjologiczny, sugerujący, że w badanej grupie wiek nie stanowi bariery dla utrzymania wysokiej intensywności treningowej ani nie determinuje negatywnie kompozycji ciała.
-
--   Fizjologiczna adaptacja nawodnienia - umiarkowana korelacja dodatnia ($r = 0,3$) między spożyciem wody a parametrami wysiłkowymi potwierdza prawidłowe zachowania zdrowotne uczestników – wzrost obciążenia fizycznego naturalnie pociąga za sobą zwiększoną podaż płynów.
-
--   Niezależność nawyków kulinarnych - czas poświęcony na przygotowanie posiłków nie wykazuje związku z parametrami zdrowotnymi ani treningowymi. Obala to hipotezę, jakoby zdrowszy styl życia czy lepsza sylwetka wymagały dłuższego czasu spędzanego w kuchni; kluczowa wydaje się być jakość, a nie czasochłonność diety.
+Warto jednocześnie podkreślić, że parametry takie jak wiek czy tętno (spoczynkowe i średnie) pozostają niemal całkowicie niezależne od pozostałych zmiennych, co świadczy o uniwersalnym charakterze zidentyfikowanych trendów, niezależnym od metryki czy indywidualnej charakterystyki kardiologicznej uczestników.
 
 # 4. Wnioskowanie statystyczne
 
