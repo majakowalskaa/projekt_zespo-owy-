@@ -14,7 +14,7 @@ Celem niniejszego opracowania jest analiza statystyczna czynników wpływającyc
 * Płeć i wiek nie różnicują istotnie preferencji treningowych ani tętna wysiłkowego.
 
 ## Linki
-* [Pełny raport online (RPubs)]
+* https://rpubs.com/majakowalska/1391966
 
 
 ## Wymagane pakiety R
