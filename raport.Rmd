@@ -8,6 +8,11 @@ output:
     default_style: "light"
     downcute_theme: "default"
 ---
+<style>
+body {
+  text-align: justify;
+}
+</style>
 
 ```{r setup, include=FALSE}
 # Opcje globalne dla wszystkich bloków kodu
@@ -34,11 +39,23 @@ library(kableExtra)
 lifestyle <- read_csv("dane/Final_data.csv")
 ```
 
+
+
 # Wstęp
 
-Niniejsze opracowanie stanowi kompleksową analizę wielowymiarowego zbioru danych, integrującego kluczowe wskaźniki biometryczne, precyzyjne metryki aktywności fizycznej oraz szczegółowe parametry żywieniowe. W dobie postępującej cyfryzacji medycyny i sportu, dane o stylu życia przestają być tylko liczbami, a stają się narzędziem do personalizacji zdrowia.
+### **Kontekst i cel opracowania**
 
-Głównym celem projektu jest holistyczne zbadanie synergii zachodzących między dietą, rodzajem podejmowanego wysiłku a fizjologiczną odpowiedzią organizmu. Poprzez analizę zależności między nawykami żywieniowymi a efektywnością treningową, dążymy do zidentyfikowania mechanizmów, które w największym stopniu determinują kondycję fizyczną i ogólny dobrostan uczestników.
+W dobie rosnącej świadomości prozdrowotnej oraz postępującej personalizacji programów fitness, zrozumienie korelacji między stylem życia a fizjologiczną odpowiedzią organizmu staje się kluczowe dla optymalizacji wyników sportowych. Niniejszy raport stanowi kompleksowe opracowanie analityczne oparte na obszernym zbiorze danych obejmującym **19 996 rekordów**. Głównym celem badania jest identyfikacja kluczowych determinantów wydatku energetycznego oraz analiza wpływu demografii, nawyków żywieniowych i stażu treningowego na profil biometryczny uczestników.
+
+### **Metodologia badawcza**
+
+Aby zapewnić najwyższą rzetelność wnioskowania, w raporcie wykorzystano zaawansowane narzędzia statystyczne. Integralność danych została potwierdzona rygorystyczną walidacją logiczną, która wykazała **100-procentową kompletność zbioru**. W procesie analitycznym posłużono się:
+
+-   **Statystyką opisową** do wyznaczenia trendów centralnych i rozkładów zmiennych.
+
+-   **Modelami regresji liniowej** w celu określenia predyktorów spalania kalorii.
+
+-   **Analizą wariancji (ANOVA)** oraz testami **Chi-kwadrat** dla weryfikacji istotności różnic międzygrupowych.
 
 ## Pytania badawcze
 
@@ -157,7 +174,7 @@ n_removed <- nrow(lifestyle) - nrow(lifestyle_clean)
 
 # 3. Wizualizacja danych
 
-## 1. Typ treningu × Czas trwania → Spalone kalorie
+## 1. Modelowanie wydatku energetycznego: Wpływ rodzaju i czasu trwania treningu
 
 ```{r, echo=FALSE}
 library(plotly)
@@ -183,7 +200,7 @@ Przeprowadzona analiza regresji potwierdza silną, liniową zależność między
 
 Hierarchia intensywności kształtuje się w sposób następujący: **HIIT \> Strength \> Cardio \> Yoga**. Minimalna dyspersja punktów wokół linii trendu wskazuje na wysoką powtarzalność wyników oraz stabilność parametrów spalania dla każdego z badanych typów wysiłku.
 
-## 2. Częstotliwość treningów × Spalone kalorie
+## 2. Wpływ systematyczności treningowej na bilans kaloryczny
 
 ```{r, echo=FALSE}
 ggplot(lifestyle_clean, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned)) + 
@@ -200,7 +217,7 @@ ggplot(lifestyle_clean, aes(x = `Workout_Frequency (days/week)`, y = Calories_Bu
 
 Analiza wykazuje silną, dodatnią korelację liniową między częstotliwością treningów a liczbą spalonych kalorii, niezależną od płci badanych osób. Równomierne rozproszenie punktów wiekowych w całym zbiorze danych potwierdza, że korzyści z regularnej aktywności fizycznej są uniwersalne dla różnych grup wiekowych. Trend wzrostowy pozostaje stabilny dla obu analizowanych grup, choć przy wyższej liczbie sesji treningowych obserwuje się większe zróżnicowanie indywidualnych wyników wydatku energetycznego.
 
-## 3. Docelowa grupa mięśniowa i Trudność × Spalone kalorie (30 min)
+## 3. Analiza intensywności metabolicznej: Cel trneingowy a stopień zaawansowania
 
 ```{r, echo=FALSE}
 library(stringr) 
@@ -239,7 +256,7 @@ ggplotly(p7)
 
 Najwyższy wydatek energetyczny w badanym okresie 30 minut generuje trening obręczy barkowej na poziomie średniozaawansowanym, osiągając wartość ok. 346 kcal. U osób początkujących największą efektywność pod kątem spalania kalorii wykazują ćwiczenia nóg i pośladków, podczas gdy treningi ogólnorozwojowe oraz mięśni brzucha charakteryzują się wysoką stabilnością wyników niezależnie od stopnia trudności. Całkowite zróżnicowanie efektów mieści się w wąskim przedziale 343–346 kcal, co świadczy o relatywnie wyrównanej intensywności wszystkich analizowanych jednostek treningowych.
 
-## 4. Typ diety × Procent tkanki tłuszczowej / BMI
+## 4. Wpływ modeli żywieniowych na kompozycję ciała i parametry biometryczne
 
 ```{r, echo=FALSE}
 
@@ -255,7 +272,7 @@ ggplot(lifestyle_clean, aes(x = diet_type, y = BMI, fill = diet_type)) +
 
 Rozkład poziomu tkanki tłuszczowej wykazuje uderzające podobieństwo we wszystkich grupach dietetycznych, z medianą i zakresami zmienności na niemal identycznym poziomie. Prawie jednolity rozkład wartości sugeruje, że wybór konkretnego modelu żywienia nie różnicuje znacząco zawartości tłuszczu w organizmie badanych osób. Analogiczną tendencję obserwuje się w przypadku wskaźnika BMI, którego mediana dla każdej z diet oscyluje stabilnie wokół wartości 24–25. Zestawienie tych danych potwierdza, że sam rodzaj stosowanej diety nie jest kluczowym czynnikiem wpływającym na masę ciała ani parametry metaboliczne w analizowanej populacji.
 
-## 5. Poziom doświadczenia × Tętno spoczynkowe / Średnie tętno podczas treningu
+## 5. Charakterystyka kardiologiczna: Adaptacja wysiłkowa vs Poziom doświadczenia
 
 ```{r, echo=FALSE}
 # Przygotowanie danych do formatu długiego
@@ -276,7 +293,7 @@ ggplot(lifestyle_clean_long_bpm, aes(x = Experience_Level, y = BPM, fill = Typ_T
 
 Analiza wskazuje na wyraźną separację fizjologiczną między tętnem spoczynkowym a treningowym, niezależnie od stopnia zaawansowania uczestników. Tętno spoczynkowe utrzymuje stabilny poziom w granicach 60–65 BPM, podczas gdy średnie tętno wysiłkowe jest ponad dwukrotnie wyższe, osiągając wartość ok. 145 BPM. Parametry treningowe charakteryzują się znacznie większą zmiennością wyników w porównaniu do stabilnych pomiarów w fazie spoczynku. Dane te potwierdzają prawidłową, typową reakcję układu krążenia na obciążenie fizyczne u wszystkich badanych osób.
 
-## 6. Metoda gotowania x czas przygotowania / zdrowy posiłek
+## 6. Determinanty czasu przygotowania posiłków w kontekście metod kulinarnych
 
 ```{r, echo=FALSE}
 
@@ -301,7 +318,7 @@ type = "nonparametric"
 
 Analiza metod gotowania w odniesieniu do czasu przygotowania posiłków wykazuje wysoką jednorodność danych we wszystkich badanych kategoriach. Mediana czasu przyrządzania potraw oscyluje stabilnie wokół 34–35 minut, niezależnie od tego, czy posiłek jest smażony, gotowany na parze czy spożywany na surowo. Zarówno rozkłady pudełkowe, jak i gęstości (wykresy skrzypcowe) potwierdzają niemal identyczne zakresy zmienności dla każdej z siedmiu analizowanych technik. Statystyczny brak istotnych różnic sugeruje, że wybór konkretnej metody kulinarnej nie determinuje w sposób znaczący czasu poświęcanego na przygotowanie zdrowego posiłku.
 
-## 7. Typ treningu × Dzienne spożycie makroskładników
+## 7. Struktura spożycia makroskładników w relacji do dyscypliny sportowej
 
 ```{r, echo=FALSE}
 macro_summary <- lifestyle_clean %>%
@@ -326,7 +343,7 @@ ggplot(macro_summary, aes(x = Makroskladnik, y = Workout_Type, fill = Srednia_Gr
 
 Średnie spożycie makroskładników pozostaje stałe we wszystkich grupach i jest niezależne od rodzaju uprawianego treningu. Wartości białka (100 g), tłuszczów (66 g) oraz węglowodanów (250 g) wykazują minimalną zmienność między osobami trenującymi jogę, HIIT, cardio czy siłowo. Brak korelacji między dyscypliną sportu a strukturą diety sugeruje jednolite nawyki żywieniowe w całej badanej populacji. Oznacza to, że rodzaj aktywności fizycznej nie różnicuje sposobu odżywiania badanych osób.
 
-## 8. Typ diety × Zawartość cukru, sodu i cholesterolu
+## 8. Analiza składników krytycznych w ramach różnych modeli dietetycznych
 
 ```{r, echo=FALSE}
 nutrients_long <- lifestyle_clean %>%
@@ -345,7 +362,7 @@ ggplot(nutrients_long, aes(x = diet_type, y = Wartosc, fill = diet_type)) +
 
 Analiza zawartości cholesterolu, sodu oraz cukru wykazuje niemal identyczne profile odżywcze dla wszystkich sześciu badanych typów diet. Mediany oraz zakresy międzykwartylowe dla poszczególnych składników krytycznych utrzymują się na stałym poziomie, niezależnie od tego, czy badani stosują model Keto, wegański czy zrównoważony. Brak istotnego zróżnicowania sugeruje, że w analizowanej populacji sam wybór etykiety dietetycznej nie gwarantuje niższej podaży tych parametrów metabolicznych. Dane te wskazują na wysoką homogeniczność składu jakościowego posiłków we wszystkich grupach uczestników.
 
-## 9. Wiek i Płeć × Typ treningu / Poziom trudności ćwiczeń
+## 9. Neutralność demograficzna w doborze parametrów treningowych
 
 ```{r, echo=FALSE}
 # Płeć vs Poziom Trudności
@@ -372,7 +389,7 @@ ggplot(lifestyle_clean, aes(x = Workout_Type, y = Age, fill = Workout_Type)) +
 
 Struktura demograficzna uczestników wykazuje pełną równowagę w podziale na płeć w każdym z trzech poziomów trudności ćwiczeń, gdzie udział kobiet i mężczyzn wynosi po 50%. Jednocześnie analiza preferencji treningowych w zależności od wieku (10–60 lat) nie wykazuje istotnych korelacji, co potwierdzają niemal identyczne wykresy skrzypcowe i rozkłady gęstości dla wszystkich dyscyplin. Mediana wieku uczestników we wszystkich grupach — Cardio, HIIT, Strength oraz Yoga — oscyluje stabilnie wokół 40. roku życia. Dane te dowodzą, że w badanej populacji ani płeć nie warunkuje wyboru trudności wyzwań, ani wiek nie determinuje rodzaju podejmowanej aktywności fizycznej.
 
-## 10. Spożycie wody x długość treningu / częstotliwość treningu
+## 10. Dynamika nawodnienia w relacji do objętości i częstotliwości wysiłku
 
 ```{r, echo=FALSE}
 ggplot(lifestyle_clean, aes(x = `Water_Intake (liters)`, y = `Session_Duration (hours)`)) + 
@@ -445,7 +462,7 @@ barplot(table(lifestyle_clean$Workout_Type), las=2, col="steelblue", main="Częs
 
 Zbiorowość jest podzielona niemal idealnie po połowie między kobiety (**Female**) a mężczyzn (**Male**). Taki rozkład pozwala na wyciąganie rzetelnych wniosków porównawczych, gdyż żadna z grup nie dominuje liczebnie, co minimalizuje ryzyko błędu statystycznego przy porównywaniu płci.
 
-#### **Popularność dyscyplin** 
+#### **Popularność dyscyplin**
 
 Wszystkie cztery analizowane kategorie (**Cardio, HIIT, Strength, Yoga**) wykazują zbliżoną liczebność, oscylującą wokół **5000 obserwacji** na każdy typ. Dane pochodzą z eksperymentu lub bazy o zaplanowanej strukturze, gdzie każda aktywność została udokumentowana z taką samą dokładnością. Pozwala to na precyzyjne porównanie efektywności np. Jogi względem HIIT na dużej próbie.
 
@@ -512,7 +529,7 @@ W obszarze zachowań prozdrowotnych dostrzegalna jest umiarkowana korelacja doda
 
 Warto jednocześnie podkreślić, że parametry takie jak wiek czy tętno (spoczynkowe i średnie) pozostają niemal całkowicie niezależne od pozostałych zmiennych, co świadczy o uniwersalnym charakterze zidentyfikowanych trendów, niezależnym od metryki czy indywidualnej charakterystyki kardiologicznej uczestników.
 
-# 4. Wnioskowanie statystyczne
+# 5. Wnioskowanie statystyczne
 
 1.  Typ treningu i Czas trwania → Spalone kalorie
 
@@ -525,23 +542,31 @@ kable(tidy(model1),
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
 
+Model regresji wykazał, że wszystkie analizowane zmienne mają statystycznie istotny wpływ na liczbę spalonych kalorii (p = 0).
+
+Kluczowym predyktorem wydatku energetycznego jest **czas trwania sesji**, gdzie każda dodatkowa godzina treningu zwiększa spalanie o średnio **1195,13 kcal**. W odniesieniu do bazy porównawczej (którą stanowi Cardio), poszczególne dyscypliny wykazują skrajnie różną efektywność metaboliczną: trening **HIIT** generuje najwyższy przyrost wydatku energetycznego (**+452,33 kcal**), podczas gdy trening siłowy (**Strength**) wiąże się ze wzrostem o **152,05 kcal**. Z kolei **Joga** charakteryzuje się najniższą intensywnością, spalając średnio o **298,14 kcal mniej** niż sesja Cardio o tym samym czasie trwania.
+
 2.  Częstotliwość treningów → Kalorie (Kontrola: Wiek i Płeć)
 
 ```{r, echo=FALSE}
 model4 <- lm(Calories_Burned ~ `Workout_Frequency (days/week)` + Age + Gender, data = lifestyle_clean)
-kable(tidy(model4), digits = 3, caption = "Tabela 4: Wpływ częstotliwości na kalorie (model z kontrolą)") %>%
+kable(tidy(model4), digits = 3, caption = "Tabela 2: Wpływ częstotliwości na kalorie (model z kontrolą)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Model regresji potwierdził, że dominującym czynnikiem determinującym całkowity wydatek energetyczny jest częstotliwość treningów, gdzie każdy dodatkowy dzień aktywności w tygodniu przekłada się na statystyczny wzrost spalania o **321,41 kcal** ($p = 0,000$). Analiza wykazała również istotny, choć marginalny wpływ procesu starzenia – z każdym rokiem życia przewidywana liczba spalonych kalorii podczas sesji obniża się o ok. **1,05 kcal**. Jednocześnie model jednoznacznie wskazuje na neutralność płci w kontekście efektywności metabolicznej ($p = 0,998$), co oznacza, że przy zachowaniu tej samej częstotliwości i wieku, różnice w spalaniu między kobietami a mężczyznami są statystycznie nieistotne. Wysoka wartość statystyki t dla zmiennej częstotliwości (101,5) przy minimalnym błędzie standardowym dowodzi wyjątkowej precyzji i stabilności otrzymanych wyników predykcyjnych.
 
 3.  Grupa mięśniowa i Trudność → Spalanie (per 30 min)
 
 ```{r, echo=FALSE}
 model7 <- aov(`Burns Calories (per 30 min)` ~ `Target Muscle Group` + `Difficulty Level`, data = lifestyle_clean)
-kable(tidy(model7), digits = 3, caption = "Tabela 7: ANOVA - Spalanie wg grupy mięśniowej i trudności") %>%
+kable(tidy(model7), digits = 3, caption = "Tabela 3: ANOVA - Spalanie wg grupy mięśniowej i trudności") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Przeprowadzona analiza wariancji wykazała brak istotnego statystycznie wpływu zarówno docelowej grupy mięśniowej, jak i poziomu trudności na tempo spalania kalorii w ujęciu 30-minutowym. Wartości p-value dla zmiennej **Target Muscle Group (0,722)** oraz **Difficulty Level (0,162)** znacznie przekraczają przyjęty próg istotności \$\alpha = 0,05, co jednoznacznie wskazuje, że wydatek energetyczny na jednostkę czasu pozostaje relatywnie stały niezależnie od wybranego celu anatomicznego czy stopnia zaawansowania ćwiczeń. Taki wynik potwierdza wysoką homogeniczność intensywności metabolicznej badanych jednostek treningowych, co sugeruje bardzo precyzyjne i wyrównane skalowanie obciążeń w ramach całego programu, gwarantujące zbliżony deficyt energetyczny bez względu na specyfikę danego treningu.
 
 4.  Typ diety → BMI i Procent tłuszczu
 
@@ -553,7 +578,7 @@ tidy_bmi <- tidy(test_bmi)
 kable(tidy_bmi, 
       col.names = c("Termin", "Stopnie swobody", "Suma kwadratów", "Średni kwadrat", "Statystyka F", "Wartość p"),
       digits = 3, 
-      caption = "Tabela: Wyniki testu ANOVA dla wpływu diety na BMI") %>%
+      caption = "Tabela 4a: Wyniki testu ANOVA dla wpływu diety na BMI") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 
@@ -564,26 +589,31 @@ tidy_fat <- tidy(test_fat)
 kable(tidy_fat, 
       col.names = c("Termin", "Stopnie swobody", "Suma kwadratów", "Średni kwadrat", "Statystyka F", "Wartość p"),
       digits = 3, 
-      caption = "Tabela: Wyniki testu ANOVA dla wpływu diety na procent tkanki tłuszczowej") %>%
+      caption = "Tabela 4b: Wyniki testu ANOVA dla wpływu diety na procent tkanki tłuszczowej") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
 ```
+
+Przeprowadzona analiza wariancji potwierdziła statystycznie istotny wpływ rodzaju stosowanej diety na kluczowe parametry biometryczne respondentów. W odniesieniu do wskaźnika BMI, uzyskana wartość p równa **0,011** dowodzi, że różnice w masie ciała między grupami o różnych modelach żywienia są istotne i nieprzypadkowe. Analogiczną, lecz statystycznie jeszcze silniejszą zależność zaobserwowano w przypadku procentowej zawartości tkanki tłuszczowej, gdzie wartość p wynosząca **0,006** przy statystyce F równej 3,255 wskazuje na mierzalny wpływ wyboru modelu żywienia na kompozycję sylwetki. Takie wyniki stanowią statystyczną podstawę do twierdzenia, że sposób odżywiania ma realne i udowodnione przełożenie na parametry metaboliczne oraz ogólną kondycję fizyczną badanej populacji.
 
 5.  Poziom doświadczenia → Tętno (Resting & Avg)
 
 ```{r, echo=FALSE}
 # Tętno spoczynkowe
 tidy_resting <- tidy(aov(Resting_BPM ~ Experience_Level, data = lifestyle_clean))
-kable(tidy_resting, digits = 3, caption = "Tabela 3a: ANOVA - Tętno spoczynkowe vs Doświadczenie") %>%
+kable(tidy_resting, digits = 3, caption = "Tabela 5a: ANOVA - Tętno spoczynkowe vs Doświadczenie") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 
 # Tętno średnie
 tidy_avg_bpm <- tidy(aov(Avg_BPM ~ Experience_Level, data = lifestyle_clean))
-kable(tidy_avg_bpm, digits = 3, caption = "Tabela 3b: ANOVA - Średnie tętno vs Doświadczenie") %>%
+kable(tidy_avg_bpm, digits = 3, caption = "Tabela 5b: ANOVA - Średnie tętno vs Doświadczenie") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Przeprowadzona analiza wariancji wykazała brak istotnego statystycznie wpływu poziomu doświadczenia na parametry kardiologiczne respondentów, zarówno w stanie spoczynku, jak i podczas wysiłku. Uzyskane wartości p-value dla tętna spoczynkowego (**0,907**) oraz tętna średniego (**0,426**) znacznie przekraczają przyjęty próg istotności $\alpha = 0,05$, co jednoznacznie wskazuje, że staż treningowy nie różnicuje fizjologicznej reakcji układu krążenia w badanej populacji. Brak istotności statystycznej w obu modelach sugeruje, że intensywność treningów jest optymalnie personalizowana i skalowana do indywidualnej wydolności uczestników, dzięki czemu profil kardiologiczny osób na różnym poziomie zaawansowania pozostaje na zbliżonym, stabilnym poziomie.Metoda gotowania i Czas → Ocena posiłku (Rating)
 
 6.  Metoda gotowania i Czas → Ocena posiłku (Rating)
 
@@ -593,10 +623,12 @@ model5 <- lm(rating ~ cooking_method + prep_time_min, data = lifestyle_clean)
 kable(tidy(model5), 
       col.names = c("Termin", "Współczynnik (Estimate)", "Błąd std.", "Statystyka t", "Wartość p"),
       digits = 3, 
-      caption = "Tabela 5: Wpływ metody gotowania i czasu przygotowania na ocenę posiłku") %>%
+      caption = "Tabela 6: Wpływ metody gotowania i czasu przygotowania na ocenę posiłku") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Analiza modelu regresji wykazała, że wybór konkretnej metody gotowania nie stanowi statystycznie istotnego czynnika różnicującego ocenę posiłku. Wszystkie wartości p-value dla poszczególnych technik obróbki (Boiled, Fried, Grilled, Raw, Roasted, Steamed) znacznie przekraczają przyjęty próg istotności $\alpha = 0,05$, co wskazuje na brak mierzalnego wpływu sposobu przygotowania potrawy na jej finalny rating. Jedynym istotnym predyktorem w analizowanym modelu okazał się **czas przygotowania posiłku** ($p = 0,000$), który wykazuje trwałą, pozytywną zależność z oceną końcową. Każda dodatkowa minuta poświęcona na przyrządzenie dania skutkuje statystycznym wzrostem oceny o **0,003** punktu, co przy bazowym poziomie Interceptu wynoszącym ok. **2,89**, potwierdza tezę o pozytywnym odbiorze posiłków wymagających większego nakładu czasu pracy.
 
 7.  Makroskładniki (Carbs, Proteins, Fats) → Typ treningu
 
@@ -606,29 +638,51 @@ tidy_prot <- tidy(aov(Proteins ~ Workout_Type, data = lifestyle_clean))
 kable(tidy_prot, digits = 3, caption = "Tabela 8: ANOVA - Spożycie białka a typ treningu") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+tidy_fats <- tidy(aov(Fats ~ Workout_Type, data = lifestyle_clean))
+
+kable(tidy_fats, 
+      col.names = c("Termin", "Stopnie swobody", "Suma kwadratów", "Średni kwadrat", "Statystyka F", "Wartość p"),
+      digits = 3, 
+      caption = "Tabela 8b: ANOVA - Spożycie tłuszczów a typ treningu") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+tidy_carbs <- tidy(aov(Carbs ~ Workout_Type, data = lifestyle_clean))
+
+kable(tidy_carbs, 
+      col.names = c("Termin", "Stopnie swobody", "Suma kwadratów", "Średni kwadrat", "Statystyka F", "Wartość p"),
+      digits = 3, 
+      caption = "Tabela 8c: ANOVA - Spożycie węglowodanów a typ treningu") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Przeprowadzone testy ANOVA jednoznacznie wykazały brak istotnego statystycznie związku między modelem żywienia a charakterem podejmowanej aktywności fizycznej. Uzyskane wartości p-value dla białek (0,699), tłuszczów (0,703) oraz węglowodanów (0,722) znacznie przekraczają przyjęty próg istotności $\alpha = 0,05$, co dowodzi, że preferencje w zakresie podaży głównych składników odżywczych pozostają niezależne od typu wykonywanego treningu. Bardzo niskie i zbliżone do siebie wartości statystyki F (od 0,444 do 0,477) potwierdzają, że zmienność w spożyciu protein, lipidów i sacharydów między grupami treningowymi jest marginalna. Wyniki te sugerują, że w badanej populacji wybór dyscypliny sportowej nie warunkuje specyficznych modyfikacji diety, co wskazuje na stały, niezmienny profil żywieniowy uczestników, niezależny od specyficznych wymagań metabolicznych danej formy ruchu.
 
 8.  Cukier, Sód, Cholesterol → Typ diety
 
 ```{r, echo=FALSE}
 # ANOVA dla Sodu
 tidy_sodium <- tidy(aov(sodium_mg ~ diet_type, data = lifestyle_clean))
-kable(tidy_sodium, digits = 3, caption = "Tabela 9a: ANOVA - Zawartość sodu w zależności od diety") %>%
+kable(tidy_sodium, digits = 3, caption = "Tabela 8a: ANOVA - Zawartość sodu w zależności od diety") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 
 # ANOVA dla Cholesterolu
 tidy_chol <- tidy(aov(cholesterol_mg ~ diet_type, data = lifestyle_clean))
-kable(tidy_chol, digits = 3, caption = "Tabela 9b: ANOVA - Zawartość cholesterolu w zależności od diety") %>%
+kable(tidy_chol, digits = 3, caption = "Tabela 8b: ANOVA - Zawartość cholesterolu w zależności od diety") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 
 # ANOVA dla Cukru
 tidy_sugar <- tidy(aov(sugar_g ~ diet_type, data = lifestyle_clean))
-kable(tidy_sugar, digits = 3, caption = "Tabela 9c: ANOVA - Zawartość cukru w zależności od diety") %>%
+kable(tidy_sugar, digits = 3, caption = "Tabela 8c: ANOVA - Zawartość cukru w zależności od diety") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Analiza wariancji wykazała brak istotnego statystycznie wpływu rodzaju stosowanej diety na spożycie sodu, cholesterolu oraz cukru w badanej populacji. Uzyskane wartości $p$-value dla sodu (0,215), cholesterolu (0,427) oraz cukru (0,729) znacznie przekraczają przyjęty próg istotności $\alpha = 0,05$, co jednoznacznie wskazuje, że wybór konkretnego modelu żywienia nie różnicuje poziomu konsumpcji tych składników. Niskie wartości statystyki F (od 0,562 dla cukru do 1,415 dla sodu) dodatkowo potwierdzają, że zmienność między poszczególnymi grupami dietetycznymi jest minimalna i nieistotna statystycznie. Wyniki te sugerują, że niezależnie od deklarowanego modelu żywienia, uczestnicy badania wykazują zbliżone nawyki w zakresie podaży tych parametrów, co może świadczyć o tym, że same etykiety diet (takie jak wegańska, paleo czy ketogeniczna) nie gwarantują w tej grupie automatycznego obniżenia poziomu cukru czy cholesterolu w codziennym jadłospisie.
 
 9.  Wiek i Płeć → Wybory treningowe
 
@@ -636,17 +690,19 @@ kable(tidy_sugar, digits = 3, caption = "Tabela 9c: ANOVA - Zawartość cukru w 
 # Test Chi-kwadrat (Płeć vs Trudność)
 test_chi <- tidy(chisq.test(table(lifestyle_clean$Gender, lifestyle_clean$`Difficulty Level`)))
 
-kable(test_chi, digits = 3, caption = "Tabela 10a: Test Chi-kwadrat dla Płci i Poziomu Trudności") %>%
+kable(test_chi, digits = 3, caption = "Tabela 9a: Test Chi-kwadrat dla Płci i Poziomu Trudności") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 
 # ANOVA (Wiek vs Typ Treningu)
 tidy_age_workout <- tidy(aov(Age ~ Workout_Type, data = lifestyle_clean))
 
-kable(tidy_age_workout, digits = 3, caption = "Tabela 10b: ANOVA - Wiek a wybór treningu") %>%
+kable(tidy_age_workout, digits = 3, caption = "Tabela 9b: ANOVA - Wiek a wybór treningu") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Analizy statystyczne wykazały, że cechy demograficzne nie determinują preferencji treningowych uczestników. Wynik testu Chi-kwadrat dla zależności między płcią a trudnością ćwiczeń ($p = 0,803$) oraz analiza ANOVA dla wieku i typu treningu ($p = 0,957$) potwierdzają brak istotnych powiązań statystycznych między tymi zmiennymi. Tak wysokie wartości prawdopodobieństwa wskazują na pełną homogeniczność grupy, co sugeruje, że wybory sportowe w badanej populacji wynikają z indywidualnych celów, a nie z przynależności do konkretnej kategorii wiekowej czy płciowej.
 
 10. Spożycie wody → Czas i Częstotliwość treningu
 
@@ -655,7 +711,7 @@ test_cor_water_time <- tidy(cor.test(lifestyle_clean$`Water_Intake (liters)`,
                                      lifestyle_clean$`Session_Duration (hours)`))
 
 kable(test_cor_water_time, 
-      caption = "Tabela 6a: Korelacja spożycia wody z czasem trwania sesji") %>%
+      caption = "Tabela 10a: Korelacja spożycia wody z czasem trwania sesji") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 
@@ -664,7 +720,35 @@ test_cor_water_freq <- tidy(cor.test(lifestyle_clean$`Water_Intake (liters)`,
                                      lifestyle_clean$`Workout_Frequency (days/week)`))
 
 kable(test_cor_water_freq, 
-      caption = "Tabela 6b: Korelacja spożycia wody z częstotliwością treningów") %>%
+      caption = "Tabela 10b: Korelacja spożycia wody z częstotliwością treningów") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#2c3e50")
 ```
+
+Analiza korelacji r-Pearsona wykazała statystycznie istotne, dodatnie związki między podażą wody a objętością realizowanej aktywności fizycznej ($p = 0$). Odnotowano wyraźną zależność między ilością spożywanych płynów a czasem trwania sesji treningowej (współczynnik korelacji 0,288), co sugeruje, że wraz z wydłużaniem jednostek treningowych uczestnicy w sposób świadomy zwiększają nawodnienie organizmu. Podobną prawidłowość zaobserwowano w odniesieniu do regularności ćwiczeń – korelacja na poziomie 0,241 potwierdza, że osoby trenujące z większą częstotliwością wykazują zdrowsze nawyki behawioralne w zakresie codziennej hydratacji. Wyniki te dowodzą, że wzrost zaangażowania w sport bezpośrednio stymuluje dbałość o równowagę wodno-elektrolitową, co jest kluczowe dla efektywności procesów regeneracyjnych i ogólnej wydolności badanej grupy.
+
+# 6. Synteza wyników i rekomendacje praktyczne
+
+### **Profil populacji i fundamenty biometryczne**
+
+Przeprowadzona analiza zbioru obejmującego 20 000 rekordów pozwoliła na nakreślenie niezwykle spójnego obrazu współczesnego adepta aktywności fizycznej. Badana populacja charakteryzuje się dużą stabilnością parametrów; średni wiek wynoszący ok. **39 lat** oraz niemal idealny parytet płci ($50/50$) stanowią o wysokiej reprezentatywności danych. Kluczowym odkryciem w obszarze biometrii jest potwierdzenie wysokiej użyteczności wskaźnika BMI jako predyktora kompozycji ciała – silna korelacja dodatnia z procentową zawartością tkanki tłuszczowej ($r = 0,9$) czyni go wiarygodnym narzędziem monitoringu postępów w tej grupie.
+
+### **Efektywność treningowa: Mechanizmy spalania kalorii**
+
+Wnioskowanie statystyczne oparte na modelach regresji zidentyfikowało hierarchię czynników determinujących sukces metaboliczny. Nadrzędne znaczenie ma **czas trwania oraz częstotliwość treningów**; każdy dodatkowy dzień aktywności w tygodniu przekłada się na statystyczny wzrost spalania o średnio **321,41 kcal**. W kontekście doboru dyscypliny, bezkonkurencyjny okazał się trening **HIIT**, generujący wydatek energetyczny wyższy o **452 kcal** względem grupy Cardio. Co warte podkreślenia, analiza obaliła demograficzne mity – wybory treningowe, ich trudność oraz wydajność metaboliczna są całkowicie niezależne od wieku i płci uczestnika, co wskazuje na uniwersalny charakter badanych zależności.
+
+### **Fizjologia i styl życia: Poza schematami**
+
+Analiza parametrów kardiologicznych dostarczyła zaskakujących wniosków, wykazując, że poziom doświadczenia nie różnicuje istotnie tętna spoczynkowego ani wysiłkowego ($p > 0,05$). Sugeruje to, że intensywność ćwiczeń jest w badanej grupie optymalnie i indywidualnie skalowana. W obszarze dietetyki zaobserwowano istotny wpływ modelu żywienia na BMI i zawartość tłuszczu, jednak paradoksalnie nie idzie on w parze z automatyczną zmianą podaży makroskładników czy ograniczeniem cukru i sodu. Odnotowano również pozytywny aspekt behawioralny: wzrost zaangażowania w sport naturalnie stymuluje lepszą hydratację organizmu.
+
+### **Rekomendacje praktyczne**
+
+1.  **Optymalizacja redukcji:** W celu maksymalizacji deficytu kalorycznego należy priorytetyzować treningi typu **HIIT** oraz dążyć do zwiększenia częstotliwości sesji, gdyż systematyczność ma większą wagę statystyczną niż intensywność pojedynczego zrywu.
+
+2.  **Świadomość żywieniowa:** Należy zwrócić uwagę, że sama zmiana „etykiety” diety (np. na wegańską czy keto) nie gwarantuje poprawy profilu mikroskładników. Rekomenduje się celową kontrolę podaży cukru i sodu, które w badanej próbie pozostawały na zbliżonym poziomie niezależnie od typu diety.
+
+3.  **Personalizacja ponad demografię:** Programy treningowe powinny być budowane w oparciu o cele kondycyjne, a nie metrykę, ponieważ wiek i płeć nie ograniczają potencjału wydolnościowego organizmu.
+
+4.  **Kultura przygotowania posiłków:** Biorąc pod uwagę, że czas przygotowania jedzenia istotnie podnosi jego subiektywną ocenę, warto promować celebrowanie procesu gotowania jako element wspierający utrzymanie rygoru dietetycznego.
+
+
