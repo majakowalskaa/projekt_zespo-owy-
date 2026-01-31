@@ -23,6 +23,11 @@ library(dcmodify)
 library(errorlocate)
 library(plotly)
 library(ggstatsplot)
+library(dplyr)
+library(DT)
+library(broom)      
+library(knitr)      
+library(kableExtra)
 ```
 
 ```{r,echo=FALSE}
@@ -31,31 +36,40 @@ lifestyle <- read_csv("dane/Final_data.csv")
 
 # Wstęp
 
-Niniejszy projekt ma na celu przeprowadzenie kompleksowej analizy wielowymiarowego zbioru danych, który łączy kluczowe wskaźniki biometryczne, szczegółowe metryki aktywności fizycznej oraz dogłębne informacje dotyczące nawyków żywieniowych. W erze cyfrowej, gdzie dane o zdrowiu i stylu życia stają się coraz bardziej zintegrowane, możliwość holistycznego badania wzajemnych zależności między dietą, treningiem a fizjologią jest kluczowa dla zrozumienia mechanizmów kształtujących ogólny stan zdrowia i kondycję.
+Niniejsze opracowanie stanowi kompleksową analizę wielowymiarowego zbioru danych, integrującego kluczowe wskaźniki biometryczne, precyzyjne metryki aktywności fizycznej oraz szczegółowe parametry żywieniowe. W dobie postępującej cyfryzacji medycyny i sportu, dane o stylu życia przestają być tylko liczbami, a stają się narzędziem do personalizacji zdrowia.
+
+Głównym celem projektu jest holistyczne zbadanie synergii zachodzących między dietą, rodzajem podejmowanego wysiłku a fizjologiczną odpowiedzią organizmu. Poprzez analizę zależności między nawykami żywieniowymi a efektywnością treningową, dążymy do zidentyfikowania mechanizmów, które w największym stopniu determinują kondycję fizyczną i ogólny dobrostan uczestników.
 
 ## Pytania badawcze
 
-1.  Jak Typ treningu i Czas trwania sesji wpływają łącznie na liczbęS palonych kalorii?
+**Efektywność treningowa i wydatkowanie energii**
 
-2.  Czy istnieje związek między Typem diety a Procentem tkanki tłuszczowej lub BMI uczestników?
+1.  Jak typ treningu i Czas trwania sesji wpływają łącznie na liczbę spalonych kalorii?
 
-3.  W jakim stopniu Poziom doświadczenia uczestnika koreluje z jego Tętnem spoczynkowym oraz Średnim tętnem podczas treningu?
+2.  Jaka jest zależność między Częstotliwością treningów a Spalonymi kaloriami, kontrolując zmienne demograficzne, takie jak Wiek i Płeć?
 
-4.  Jaka jest zależność między Częstotliwością treningów a Spalonymi kaloriami, kontrolując zmienne demograficzne, takie jak Wiek i Płeć?
+3.  Jak docelowa grupa mięśniowa i Poziom trudności ćwiczenia wpływają na szacunkową liczbę spalonych kalorii na 30 min?
 
-5.  W jaki sposób Metoda gotowania i Czas przygotowania wpływają na to, czy posiłek jest oznaczony jako Zdrowy?
+**Fizjologia i profil biometryczny**
 
-6.  Czy istnieje korelacja między Spożyciem wody a Czasem trwania sesji lub Częstotliwością treningów?
+4.  W jakim stopniu Poziom doświadczenia uczestnika koreluje z jego Tętnem spoczynkowym oraz Średnim tętnem podczas treningu?
 
-7.  Jak Docelowa grupa mięśniowa i Poziom trudności ćwiczenia wpływają na szacunkową liczbę Spalonych kalorii na 30 min?
+5.  Czy istnieje związek między Typem diety a Procentem tkanki tłuszczowej lub BMI uczestników?
 
-8.  Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Typu treningu najczęściej wybieranego przez uczestnika?
+**Dieta i nawyki żywieniowe**
 
-9.  Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
+6.  Czy dzienne spożycie makroskładników (Carbs, Proteins, Fats) różni się znacząco w zależności od Typu treningu najczęściej wybieranego przez uczestnika?
 
-10. Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
+7.  Jak zawartość Cukru, Sodu i Cholesterolu w posiłkach różni się między różnymi Typami diet?
 
-# Opis danych
+8.  W jaki sposób Metoda gotowania i Czas przygotowania wpływają na to, czy posiłek jest oznaczony jako Zdrowy?
+
+**Behawiorystyka i demografia**
+
+9.  Czy Wiek i Płeć uczestników mają związek z wyborem Typu treningu lub Poziomem trudności ćwiczeń?
+10. Czy istnieje korelacja między Spożyciem wody a Czasem trwania sesji lub Częstotliwością treningów?
+
+## Opis danych
 
 Zbiór danych zawiera `r nrow(lifestyle)` obserwacji i `r ncol(lifestyle)` zmiennych.
 
@@ -80,7 +94,11 @@ Poniżej znajduje się opis najważniejszych zmiennych:
 
 # 2. Porządkowanie i czyszczenie danych
 
-# 2.1 Braki danych
+### Braki danych
+
+Przeprowadzona analiza integralności zbioru danych wykazała **stuprocentową kompletność rekordów** (brak wartości NA), co jest rzadko spotykanym zjawiskiem w surowych zbiorach danych i świadczy o wysokiej jakości źródła.
+
+Dzięki nienagannej strukturze surowego zbioru danych oraz braku jakichkolwiek braków danych czy błędów logicznych, etap czyszczenia ograniczono wyłącznie do technicznego przygotowania zmiennych, co pozwoliło na zachowanie pełnej liczebności próby i gwarantuje najwyższą wiarygodność wyników statystycznych
 
 ```{r, echo=FALSE}
 procent <- prop_complete_var(lifestyle)*100
@@ -100,7 +118,15 @@ VIM::aggr(lifestyle,
           ylab=c("Procent braków danych","Wzorzec braków danych"))
 ```
 
-## walidacja danych
+## Walidacja danych
+
+Proces walidacji logicznej (reguły V1-V6) potwierdził, że dane są spójne wewnętrznie:
+
+-   Wszyscy respondenci są osobami pełnoletnimi (Age\>18).
+
+-   Parametry biometryczne, takie jak BMI (zakres 10–50) oraz tętno spoczynkowe, mieszczą się w fizjologicznych granicach normy.
+
+-   Zbiór obserwacji przeszedł testy bez ani jednego błędu (fails = 0), co stanowi solidny fundament pod dalsze modelowanie statystyczne bez ryzyka obciążenia wynikającego z błędów grubych.
 
 **Definicja**
 
@@ -120,73 +146,47 @@ cf <- confront(lifestyle, rules)
 
 # Podsumowanie i wykres
 barplot(cf, main = "Wyniki walidacji danych")
+
+logical_matrix <- values(cf)
+correct_rows <- apply(logical_matrix, 1, all)
+library(dplyr)
+lifestyle_clean <- lifestyle[correct_rows, ] %>%
+  mutate(across(where(is.character), as.factor))
+n_removed <- nrow(lifestyle) - nrow(lifestyle_clean)
 ```
 
-## wizualizacja danych
+# 3. Wizualizacja danych
 
-# 1. Typ treningu × Czas trwania → Spalone kalorie
+## 1. Typ treningu × Czas trwania → Spalone kalorie
 
 ```{r, echo=FALSE}
-ggplot(lifestyle,
-aes(x = `Session_Duration (hours)`,
-y = Calories_Burned,
-color = Workout_Type)) +
-geom_point(alpha = 0.6) +
-geom_smooth(method = "lm", se = FALSE) +
-labs(
-title = "Czas trwania treningu a spalone kalorie",
-x = "Czas trwania sesji (godziny)",
-y = "Spalone kalorie",
-color = "Typ treningu"
-) +
-scale_color_viridis_d() +
-theme_minimal()
+library(plotly)
+
+p1 <- ggplot(lifestyle_clean,
+  aes(x = `Session_Duration (hours)`,
+      y = Calories_Burned,
+      color = Workout_Type)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Interaktywny: Czas trwania treningu a spalone kalorie",
+    x = "Czas trwania sesji (godziny)",
+    y = "Spalone kalorie"
+  ) +
+  scale_color_viridis_d() +
+  theme_minimal()
+
+ggplotly(p1)
 ```
 
-Analiza wykazuje, że typ stosowanej diety nie ma istotnego wpływu na wskaźnik BMI, natomiast liczba spalonych kalorii rośnie liniowo wraz z częstotliwością treningów, niezależnie od wieku i płci uczestników. Zdecydowanie najwyższą efektywność metaboliczną osiąga trening HIIT, który pozwala spalić najwięcej kalorii w najkrótszym czasie, podczas gdy joga wymaga znacznie dłuższych sesji, aby osiągnąć zbliżony wynik.
+Przeprowadzona analiza regresji potwierdza silną, liniową zależność między czasem trwania sesji a wydatkiem energetycznym we wszystkich grupach badawczych. Odnotowano istotne zróżnicowanie efektywności metabolicznej poszczególnych dyscyplin, z wyraźną dominacją treningu **HIIT**, który generuje blisko dwukrotnie wyższe spalanie w porównaniu do Jogi.
 
-# 2. Typ diety × Procent tkanki tłuszczowej / BMI
+Hierarchia intensywności kształtuje się w sposób następujący: **HIIT \> Strength \> Cardio \> Yoga**. Minimalna dyspersja punktów wokół linii trendu wskazuje na wysoką powtarzalność wyników oraz stabilność parametrów spalania dla każdego z badanych typów wysiłku.
 
-```{r, echo=FALSE}
-# Wykres interaktywny Plotly - Boxplot Tłuszcze
-plot_ly(lifestyle, x = ~diet_type, y = ~Fats, type = "box", color = ~diet_type)
-
-# Wykres statyczny ggplot - Violin plot
-ggplot(lifestyle, aes(x = diet_type, y = BMI, fill = diet_type)) + 
-  geom_violin(trim = FALSE, alpha = 0.6) + 
-  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) + 
-  labs(title = "Rozkład BMI w zależności od diety", x = "Typ diety", y = "BMI") + 
-  theme_minimal() + 
-  theme(legend.position = "none")
-```
-
-Analiza rozkładu gęstości (wykres skrzypcowy) wykazuje, że profil BMI jest niemal identyczny dla wszystkich grup dietetycznych, z medianą oscylującą stabilnie wokół wartości 24-25. Dowodzi to, że w badanej populacji sam typ stosowanej diety nie jest czynnikiem różnicującym masę ciała uczestników.
-
-# 3. Poziom doświadczenia × Tętno spoczynkowe / Średnie tętno podczas treningu
+## 2. Częstotliwość treningów × Spalone kalorie
 
 ```{r, echo=FALSE}
-# Przygotowanie danych do formatu długiego
-lifestyle_long_bpm <- lifestyle %>% 
-  select(Experience_Level, Resting_BPM, Avg_BPM) %>% 
-  pivot_longer(cols = c(Resting_BPM, Avg_BPM), names_to = "Typ_Tetna", values_to = "BPM")
-
-# Wykres
-ggplot(lifestyle_long_bpm, aes(x = Experience_Level, y = BPM, fill = Typ_Tetna)) + 
-  geom_violin(trim = FALSE, alpha = 0.5) + 
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), alpha = 0.8) + 
-  labs(title = "Tętno a poziom doświadczenia", 
-       x = "Poziom doświadczenia", 
-       y = "Tętno (BPM)", 
-       fill = "Rodzaj pomiaru") + 
-  scale_fill_manual(values = c("steelblue", "salmon"), labels = c("Średnie treningowe", "Spoczynkowe"))
-```
-
-Analiza wykazuje wyraźną fizjologiczną różnicę między mierzonymi parametrami: tętno spoczynkowe oscyluje stabilnie wokół 60-65 BPM, podczas gdy tętno treningowe jest średnio ponad dwukrotnie wyższe (ok. 145 BPM) i charakteryzuje się większą zmiennością. Dane potwierdzają prawidłową reakcję organizmów uczestników na wysiłek fizyczny, niezależnie od ich poziomu zaawansowania.
-
-# 4. Częstotliwość treningów × Spalone kalorie (kontrolując Wiek i Płeć)
-
-```{r, echo=FALSE}
-ggplot(lifestyle, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned)) + 
+ggplot(lifestyle_clean, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned)) + 
   geom_jitter(aes(color = Age), width = 0.2, alpha = 0.7) + 
   geom_smooth(method = "lm", color = "black", se = TRUE) + 
   facet_wrap(~Gender) + 
@@ -198,14 +198,89 @@ ggplot(lifestyle, aes(x = `Workout_Frequency (days/week)`, y = Calories_Burned))
        color = "Wiek")
 ```
 
-Dane wykazują silną, liniową zależność, w której zwiększenie częstotliwości treningów bezpośrednio przekłada się na wzrost liczby spalonych kalorii, przy czym trend ten jest niemal identyczny dla obu płci. Równomierne rozproszenie punktów reprezentujących wiek dowodzi, że korzyści z częstszej aktywności są niezależne od metryki uczestnika.
+Analiza wykazuje silną, dodatnią korelację liniową między częstotliwością treningów a liczbą spalonych kalorii, niezależną od płci badanych osób. Równomierne rozproszenie punktów wiekowych w całym zbiorze danych potwierdza, że korzyści z regularnej aktywności fizycznej są uniwersalne dla różnych grup wiekowych. Trend wzrostowy pozostaje stabilny dla obu analizowanych grup, choć przy wyższej liczbie sesji treningowych obserwuje się większe zróżnicowanie indywidualnych wyników wydatku energetycznego.
 
-# 5. Metoda gotowania x czas przygotowania / zdrowy posiłek
+## 3. Docelowa grupa mięśniowa i Trudność × Spalone kalorie (30 min)
 
 ```{r, echo=FALSE}
-# Wykres 5: Metoda gotowania a czas przygotowania
+library(stringr) 
 
-ggplot(lifestyle, aes(x = cooking_method, y = prep_time_min, fill = cooking_method)) + 
+
+lifestyle_clean_aggregated <- lifestyle_clean %>%
+  mutate(Muscle_Group_Simple = case_when(
+    str_detect(`Target Muscle Group`, "Chest") ~ "Chest Focus",
+    str_detect(`Target Muscle Group`, "Legs|Glutes|Quadriceps|Hamstrings|Calves") ~ "Legs & Glutes",
+    str_detect(`Target Muscle Group`, "Back|Lats|Traps") ~ "Back Focus",
+    str_detect(`Target Muscle Group`, "Abs|Core|Obliques") ~ "Core Focus",
+    str_detect(`Target Muscle Group`, "Arms|Biceps|Triceps") & !str_detect(`Target Muscle Group`, "Chest") ~ "Arms Focus",
+    str_detect(`Target Muscle Group`, "Shoulders") & !str_detect(`Target Muscle Group`, "Chest|Back") ~ "Shoulders Focus",
+    TRUE ~ "Full Body / Other"
+  ))
+
+heatmap_data_agg <- lifestyle_clean_aggregated %>%
+  group_by(Muscle_Group_Simple, `Difficulty Level`) %>%
+  summarise(Avg_Burn = mean(`Burns Calories (per 30 min)`, na.rm = TRUE), .groups = 'drop') %>%
+  
+  mutate(`Difficulty Level` = factor(`Difficulty Level`, levels = c("Beginner", "Intermediate", "Advanced")))
+
+
+library(plotly)
+
+p7 <- ggplot(heatmap_data_agg, aes(x = `Difficulty Level`, y = Muscle_Group_Simple, fill = Avg_Burn)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c(option = "plasma", name = "kcal") +
+  labs(title = "Interaktywna mapa intensywności spalania",
+       x = "Poziom trudności", 
+       y = "Grupa mięśniowa") +
+  theme_minimal()
+
+ggplotly(p7)
+```
+
+Najwyższy wydatek energetyczny w badanym okresie 30 minut generuje trening obręczy barkowej na poziomie średniozaawansowanym, osiągając wartość ok. 346 kcal. U osób początkujących największą efektywność pod kątem spalania kalorii wykazują ćwiczenia nóg i pośladków, podczas gdy treningi ogólnorozwojowe oraz mięśni brzucha charakteryzują się wysoką stabilnością wyników niezależnie od stopnia trudności. Całkowite zróżnicowanie efektów mieści się w wąskim przedziale 343–346 kcal, co świadczy o relatywnie wyrównanej intensywności wszystkich analizowanych jednostek treningowych.
+
+## 4. Typ diety × Procent tkanki tłuszczowej / BMI
+
+```{r, echo=FALSE}
+
+plot_ly(lifestyle_clean, x = ~diet_type, y = ~Fats, type = "box", color = ~diet_type)
+
+ggplot(lifestyle_clean, aes(x = diet_type, y = BMI, fill = diet_type)) + 
+  geom_violin(trim = FALSE, alpha = 0.6) + 
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) + 
+  labs(title = "Rozkład BMI w zależności od diety", x = "Typ diety", y = "BMI") + 
+  theme_minimal() + 
+  theme(legend.position = "none")
+```
+
+Rozkład poziomu tkanki tłuszczowej wykazuje uderzające podobieństwo we wszystkich grupach dietetycznych, z medianą i zakresami zmienności na niemal identycznym poziomie. Prawie jednolity rozkład wartości sugeruje, że wybór konkretnego modelu żywienia nie różnicuje znacząco zawartości tłuszczu w organizmie badanych osób. Analogiczną tendencję obserwuje się w przypadku wskaźnika BMI, którego mediana dla każdej z diet oscyluje stabilnie wokół wartości 24–25. Zestawienie tych danych potwierdza, że sam rodzaj stosowanej diety nie jest kluczowym czynnikiem wpływającym na masę ciała ani parametry metaboliczne w analizowanej populacji.
+
+## 5. Poziom doświadczenia × Tętno spoczynkowe / Średnie tętno podczas treningu
+
+```{r, echo=FALSE}
+# Przygotowanie danych do formatu długiego
+lifestyle_clean_long_bpm <- lifestyle_clean %>% 
+  select(Experience_Level, Resting_BPM, Avg_BPM) %>% 
+  pivot_longer(cols = c(Resting_BPM, Avg_BPM), names_to = "Typ_Tetna", values_to = "BPM")
+
+# Wykres
+ggplot(lifestyle_clean_long_bpm, aes(x = Experience_Level, y = BPM, fill = Typ_Tetna)) + 
+  geom_violin(trim = FALSE, alpha = 0.5) + 
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), alpha = 0.8) + 
+  labs(title = "Tętno a poziom doświadczenia", 
+       x = "Poziom doświadczenia", 
+       y = "Tętno (BPM)", 
+       fill = "Rodzaj pomiaru") + 
+  scale_fill_manual(values = c("steelblue", "salmon"), labels = c("Średnie treningowe", "Spoczynkowe"))
+```
+
+Analiza wskazuje na wyraźną separację fizjologiczną między tętnem spoczynkowym a treningowym, niezależnie od stopnia zaawansowania uczestników. Tętno spoczynkowe utrzymuje stabilny poziom w granicach 60–65 BPM, podczas gdy średnie tętno wysiłkowe jest ponad dwukrotnie wyższe, osiągając wartość ok. 145 BPM. Parametry treningowe charakteryzują się znacznie większą zmiennością wyników w porównaniu do stabilnych pomiarów w fazie spoczynku. Dane te potwierdzają prawidłową, typową reakcję układu krążenia na obciążenie fizyczne u wszystkich badanych osób.
+
+## 6. Metoda gotowania x czas przygotowania / zdrowy posiłek
+
+```{r, echo=FALSE}
+
+ggplot(lifestyle_clean, aes(x = cooking_method, y = prep_time_min, fill = cooking_method)) + 
   geom_boxplot(alpha = 0.7, outlier.shape = NA) + 
   labs(title = "Metoda gotowania a czas przygotowania", 
        subtitle = "Porównanie czasu przygotowania dla różnych metod", 
@@ -217,19 +292,90 @@ ggplot(lifestyle, aes(x = cooking_method, y = prep_time_min, fill = cooking_meth
         axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggbetweenstats(
-data = lifestyle,
+data = lifestyle_clean,
   x = cooking_method,      
   y = prep_time_min,
 type = "nonparametric"
 )
 ```
 
-Analiza wykresu wykazuje, że czas przygotowania posiłków ocenianych jako zdrowe jest niemal identyczny jak w przypadku posiłków ocenianych niżej, niezależnie od zastosowanej metody obróbki termicznej. Oznacza to, że przygotowanie pełnowartościowego dania nie wymaga poświęcenia większej ilości czasu niż przygotowanie posiłku uznawanego za mniej zdrowy.
+Analiza metod gotowania w odniesieniu do czasu przygotowania posiłków wykazuje wysoką jednorodność danych we wszystkich badanych kategoriach. Mediana czasu przyrządzania potraw oscyluje stabilnie wokół 34–35 minut, niezależnie od tego, czy posiłek jest smażony, gotowany na parze czy spożywany na surowo. Zarówno rozkłady pudełkowe, jak i gęstości (wykresy skrzypcowe) potwierdzają niemal identyczne zakresy zmienności dla każdej z siedmiu analizowanych technik. Statystyczny brak istotnych różnic sugeruje, że wybór konkretnej metody kulinarnej nie determinuje w sposób znaczący czasu poświęcanego na przygotowanie zdrowego posiłku.
 
-# 6. Spożycie wody x długość treningu / częstotliwość treningu
+## 7. Typ treningu × Dzienne spożycie makroskładników
 
 ```{r, echo=FALSE}
-ggplot(lifestyle, aes(x = `Water_Intake (liters)`, y = `Session_Duration (hours)`)) + 
+macro_summary <- lifestyle_clean %>%
+  group_by(Workout_Type) %>%
+  summarise(
+    Węglowodany = mean(Carbs, na.rm = TRUE),
+    Białka = mean(Proteins, na.rm = TRUE),
+    Tłuszcze = mean(Fats, na.rm = TRUE),
+    .groups = 'drop'
+  ) %>%
+  pivot_longer(cols = -Workout_Type, names_to = "Makroskladnik", values_to = "Srednia_Gramy")
+
+ggplot(macro_summary, aes(x = Makroskladnik, y = Workout_Type, fill = Srednia_Gramy)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(Srednia_Gramy, 1)), color = "black") +
+  scale_fill_distiller(palette = "Greens", direction = 1, name = "Średnia (g)") +
+  labs(title = "Średnie spożycie makroskładników a typ treningu",
+       x = "Makroskładnik",
+       y = "Typ treningu") +
+  theme_minimal()
+```
+
+Średnie spożycie makroskładników pozostaje stałe we wszystkich grupach i jest niezależne od rodzaju uprawianego treningu. Wartości białka (100 g), tłuszczów (66 g) oraz węglowodanów (250 g) wykazują minimalną zmienność między osobami trenującymi jogę, HIIT, cardio czy siłowo. Brak korelacji między dyscypliną sportu a strukturą diety sugeruje jednolite nawyki żywieniowe w całej badanej populacji. Oznacza to, że rodzaj aktywności fizycznej nie różnicuje sposobu odżywiania badanych osób.
+
+## 8. Typ diety × Zawartość cukru, sodu i cholesterolu
+
+```{r, echo=FALSE}
+nutrients_long <- lifestyle_clean %>%
+  select(diet_type, sugar_g, sodium_mg, cholesterol_mg) %>%
+  pivot_longer(cols = -diet_type, names_to = "Skladnik", values_to = "Wartosc")
+
+ggplot(nutrients_long, aes(x = diet_type, y = Wartosc, fill = diet_type)) +
+  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
+  facet_wrap(~Skladnik, scales = "free_y") +
+  labs(title = "Analiza składników krytycznych w dietach",
+       x = "Typ diety",
+       y = "Wartość (g/mg)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
+```
+
+Analiza zawartości cholesterolu, sodu oraz cukru wykazuje niemal identyczne profile odżywcze dla wszystkich sześciu badanych typów diet. Mediany oraz zakresy międzykwartylowe dla poszczególnych składników krytycznych utrzymują się na stałym poziomie, niezależnie od tego, czy badani stosują model Keto, wegański czy zrównoważony. Brak istotnego zróżnicowania sugeruje, że w analizowanej populacji sam wybór etykiety dietetycznej nie gwarantuje niższej podaży tych parametrów metabolicznych. Dane te wskazują na wysoką homogeniczność składu jakościowego posiłków we wszystkich grupach uczestników.
+
+## 9. Wiek i Płeć × Typ treningu / Poziom trudności ćwiczeń
+
+```{r, echo=FALSE}
+# Płeć vs Poziom Trudności
+ggplot(lifestyle_clean, aes(x = `Difficulty Level`, fill = Gender)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Struktura płci w poziomach trudności",
+       subtitle = "Czy płeć wpływa na wybór trudności ćwiczeń?",
+       x = "Poziom trudności",
+       y = "Udział procentowy",
+       fill = "Płeć") +
+  theme_minimal()
+
+# Wiek vs Typ treningu
+ggplot(lifestyle_clean, aes(x = Workout_Type, y = Age, fill = Workout_Type)) +
+  geom_violin(trim = FALSE, alpha = 0.4) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  labs(title = "Wiek uczestników a preferowany typ treningu",
+       x = "Typ treningu",
+       y = "Wiek") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Struktura demograficzna uczestników wykazuje pełną równowagę w podziale na płeć w każdym z trzech poziomów trudności ćwiczeń, gdzie udział kobiet i mężczyzn wynosi po 50%. Jednocześnie analiza preferencji treningowych w zależności od wieku (10–60 lat) nie wykazuje istotnych korelacji, co potwierdzają niemal identyczne wykresy skrzypcowe i rozkłady gęstości dla wszystkich dyscyplin. Mediana wieku uczestników we wszystkich grupach — Cardio, HIIT, Strength oraz Yoga — oscyluje stabilnie wokół 40. roku życia. Dane te dowodzą, że w badanej populacji ani płeć nie warunkuje wyboru trudności wyzwań, ani wiek nie determinuje rodzaju podejmowanej aktywności fizycznej.
+
+## 10. Spożycie wody x długość treningu / częstotliwość treningu
+
+```{r, echo=FALSE}
+ggplot(lifestyle_clean, aes(x = `Water_Intake (liters)`, y = `Session_Duration (hours)`)) + 
   geom_point(aes(color = `Workout_Frequency (days/week)`), alpha = 0.6, size = 2) + 
   geom_smooth(method = "lm", color = "red", se = TRUE) + 
   scale_color_viridis_c(option = "plasma", name = "Treningi/tydz") + 
@@ -247,10 +393,58 @@ Dodatkowo, analiza kolorystyczna ujawnia wyraźną klasteryzację grup. Osoby tr
 
 Widoczne 'pionowe słupki' żółtych punktów wynikają z dużej liczby obserwacji o identycznych wartościach maksymalnych (np. równe 2 godziny treningu), co sugeruje, że najbardziej aktywni użytkownicy często raportują maksymalne dostępne wartości w ankiecie.
 
-# Mapa korelacji
+# 4. Analiza opisowa
 
 ```{r, echo=FALSE}
-wazne_zmienne <- lifestyle %>%
+library(psych)
+
+ilościowe <- lifestyle_clean %>%
+  select(Age, BMI, Calories_Burned, `Session_Duration (hours)`, Resting_BPM, Avg_BPM)
+
+tabela_opisowa <- describe(ilościowe)
+tabela_opisowa <- tabela_opisowa[, c("n", "mean", "sd", "median", "min", "max", "skew")]
+
+knitr::kable(tabela_opisowa, digits = 2, caption = "Statystyki opisowe głównych parametrów biometrycznych i treningowych")
+```
+
+```{r, echo=FALSE}
+library(tidyr)
+
+long_data <- ilościowe %>%
+  pivot_longer(everything(), names_to = "Zmienna", values_to = "Wartosc")
+
+ggplot(long_data, aes(x = Wartosc, fill = Zmienna)) +
+  geom_histogram(aes(y = ..density..), bins = 30, alpha = 0.6) +
+  geom_density(alpha = 0.2, color = "black") +
+  facet_wrap(~Zmienna, scales = "free") +
+  theme_minimal() +
+  labs(title = "Rozkłady zmiennych ilościowych", y = "Gęstość", x = "Wartość") +
+  theme(legend.position = "none")
+```
+
+```{r, echo=FALSE}
+# Procentowy udział płci i typów treningu
+par(mfrow=c(1,2))
+pie(table(lifestyle_clean$Gender), main="Struktura płci", col=c("pink", "lightblue"))
+barplot(table(lifestyle_clean$Workout_Type), las=2, col="steelblue", main="Częstość typów treningu")
+```
+
+```{r, echo=FALSE}
+# Porównanie średnich w grupach
+lifestyle_clean %>%
+  group_by(Gender) %>%
+  summarise(
+    Sredni_Wiek = mean(Age),
+    Srednie_BMI = mean(BMI),
+    Srednie_Spalanie = mean(Calories_Burned)
+  ) %>%
+  knitr::kable(digits = 2, caption = "Porównanie średnich parametrów w podziale na płeć")
+```
+
+### Mapa korelacji
+
+```{r, echo=FALSE}
+wazne_zmienne <- lifestyle_clean %>%
   select(Age, 
          BMI, 
          Fat_Percentage, 
@@ -263,7 +457,7 @@ wazne_zmienne <- lifestyle %>%
          prep_time_min) %>%
   na.omit() 
 
-# Obliczamy korelację
+
 macierz <- cor(wazne_zmienne)
 
 dane_wykres <- as.data.frame(macierz) %>%
@@ -299,3 +493,160 @@ Przeprowadzona analiza macierzy korelacji pozwoliła na zidentyfikowanie kluczow
 -   Fizjologiczna adaptacja nawodnienia - umiarkowana korelacja dodatnia ($r = 0,3$) między spożyciem wody a parametrami wysiłkowymi potwierdza prawidłowe zachowania zdrowotne uczestników – wzrost obciążenia fizycznego naturalnie pociąga za sobą zwiększoną podaż płynów.
 
 -   Niezależność nawyków kulinarnych - czas poświęcony na przygotowanie posiłków nie wykazuje związku z parametrami zdrowotnymi ani treningowymi. Obala to hipotezę, jakoby zdrowszy styl życia czy lepsza sylwetka wymagały dłuższego czasu spędzanego w kuchni; kluczowa wydaje się być jakość, a nie czasochłonność diety.
+
+# 4. Wnioskowanie statystyczne
+
+1.  Typ treningu i Czas trwania → Spalone kalorie
+
+```{r, echo=FALSE}
+model1 <- lm(Calories_Burned ~ Workout_Type + `Session_Duration (hours)`, data = lifestyle_clean)
+kable(tidy(model1), 
+      col.names = c("Termin", "Współczynnik (Estimate)", "Błąd std.", "Statystyka t", "Wartość p"),
+      digits = 3, caption = "Tabela 1: Regresja liniowa dla wydatku energetycznego") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+2.  Częstotliwość treningów → Kalorie (Kontrola: Wiek i Płeć)
+
+```{r, echo=FALSE}
+model4 <- lm(Calories_Burned ~ `Workout_Frequency (days/week)` + Age + Gender, data = lifestyle_clean)
+kable(tidy(model4), digits = 3, caption = "Tabela 4: Wpływ częstotliwości na kalorie (model z kontrolą)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+3.  Grupa mięśniowa i Trudność → Spalanie (per 30 min)
+
+```{r, echo=FALSE}
+model7 <- aov(`Burns Calories (per 30 min)` ~ `Target Muscle Group` + `Difficulty Level`, data = lifestyle_clean)
+kable(tidy(model7), digits = 3, caption = "Tabela 7: ANOVA - Spalanie wg grupy mięśniowej i trudności") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+4.  Typ diety → BMI i Procent tłuszczu
+
+```{r, echo=FALSE}
+# 1. Test ANOVA dla BMI
+test_bmi <- aov(BMI ~ diet_type, data = lifestyle_clean)
+tidy_bmi <- tidy(test_bmi)
+
+kable(tidy_bmi, 
+      col.names = c("Termin", "Stopnie swobody", "Suma kwadratów", "Średni kwadrat", "Statystyka F", "Wartość p"),
+      digits = 3, 
+      caption = "Tabela: Wyniki testu ANOVA dla wpływu diety na BMI") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+# 2. Test ANOVA dla Procentu tkanki tłuszczowej
+test_fat <- aov(Fat_Percentage ~ diet_type, data = lifestyle_clean)
+tidy_fat <- tidy(test_fat)
+
+kable(tidy_fat, 
+      col.names = c("Termin", "Stopnie swobody", "Suma kwadratów", "Średni kwadrat", "Statystyka F", "Wartość p"),
+      digits = 3, 
+      caption = "Tabela: Wyniki testu ANOVA dla wpływu diety na procent tkanki tłuszczowej") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+5.  Poziom doświadczenia → Tętno (Resting & Avg)
+
+```{r, echo=FALSE}
+# Tętno spoczynkowe
+tidy_resting <- tidy(aov(Resting_BPM ~ Experience_Level, data = lifestyle_clean))
+kable(tidy_resting, digits = 3, caption = "Tabela 3a: ANOVA - Tętno spoczynkowe vs Doświadczenie") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+# Tętno średnie
+tidy_avg_bpm <- tidy(aov(Avg_BPM ~ Experience_Level, data = lifestyle_clean))
+kable(tidy_avg_bpm, digits = 3, caption = "Tabela 3b: ANOVA - Średnie tętno vs Doświadczenie") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+6.  Metoda gotowania i Czas → Ocena posiłku (Rating)
+
+```{r, echo=FALSE}
+model5 <- lm(rating ~ cooking_method + prep_time_min, data = lifestyle_clean)
+
+kable(tidy(model5), 
+      col.names = c("Termin", "Współczynnik (Estimate)", "Błąd std.", "Statystyka t", "Wartość p"),
+      digits = 3, 
+      caption = "Tabela 5: Wpływ metody gotowania i czasu przygotowania na ocenę posiłku") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+7.  Makroskładniki (Carbs, Proteins, Fats) → Typ treningu
+
+```{r, echo=FALSE}
+tidy_prot <- tidy(aov(Proteins ~ Workout_Type, data = lifestyle_clean))
+
+kable(tidy_prot, digits = 3, caption = "Tabela 8: ANOVA - Spożycie białka a typ treningu") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+8.  Cukier, Sód, Cholesterol → Typ diety
+
+```{r, echo=FALSE}
+# ANOVA dla Sodu
+tidy_sodium <- tidy(aov(sodium_mg ~ diet_type, data = lifestyle_clean))
+kable(tidy_sodium, digits = 3, caption = "Tabela 9a: ANOVA - Zawartość sodu w zależności od diety") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+# ANOVA dla Cholesterolu
+tidy_chol <- tidy(aov(cholesterol_mg ~ diet_type, data = lifestyle_clean))
+kable(tidy_chol, digits = 3, caption = "Tabela 9b: ANOVA - Zawartość cholesterolu w zależności od diety") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+# ANOVA dla Cukru
+tidy_sugar <- tidy(aov(sugar_g ~ diet_type, data = lifestyle_clean))
+kable(tidy_sugar, digits = 3, caption = "Tabela 9c: ANOVA - Zawartość cukru w zależności od diety") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+9.  Wiek i Płeć → Wybory treningowe
+
+```{r, echo=FALSE}
+# Test Chi-kwadrat (Płeć vs Trudność)
+test_chi <- tidy(chisq.test(table(lifestyle_clean$Gender, lifestyle_clean$`Difficulty Level`)))
+
+kable(test_chi, digits = 3, caption = "Tabela 10a: Test Chi-kwadrat dla Płci i Poziomu Trudności") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+# ANOVA (Wiek vs Typ Treningu)
+tidy_age_workout <- tidy(aov(Age ~ Workout_Type, data = lifestyle_clean))
+
+kable(tidy_age_workout, digits = 3, caption = "Tabela 10b: ANOVA - Wiek a wybór treningu") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```
+
+10. Spożycie wody → Czas i Częstotliwość treningu
+
+```{r, echo=FALSE}
+test_cor_water_time <- tidy(cor.test(lifestyle_clean$`Water_Intake (liters)`, 
+                                     lifestyle_clean$`Session_Duration (hours)`))
+
+kable(test_cor_water_time, 
+      caption = "Tabela 6a: Korelacja spożycia wody z czasem trwania sesji") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+
+# Korelacja: Woda vs Częstotliwość tygodniowa
+test_cor_water_freq <- tidy(cor.test(lifestyle_clean$`Water_Intake (liters)`, 
+                                     lifestyle_clean$`Workout_Frequency (days/week)`))
+
+kable(test_cor_water_freq, 
+      caption = "Tabela 6b: Korelacja spożycia wody z częstotliwością treningów") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#2c3e50")
+```

@@ -17,3 +17,8 @@ dcmodify
 errorlocate
 plotly
 ggstatsplot
+DT
+psych
+broom
+knitr
+kableExtra
